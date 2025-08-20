@@ -1,24 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './application/services/app.service';
+import { AppController } from '../http/controllers/app.controller';
+import { AppService } from '../../application/services/app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth.module';
+import { dataSourceOptions } from '../database/data.source'
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true, // Makes the ConfigService available globally
-    }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        url: configService.get<string>('DATABASE_URL'),
-        autoLoadEntities: true,
-        synchronize: true, // Be cautious with this in production
-      }),
-    }),
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot(dataSourceOptions),
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -3,20 +3,29 @@ services:
   # NestJS App Service
   app:
     build: .
+    # Add the command to run the dev server
+    command: npm run start:dev
     ports:
-      - '${PORT}:${PORT}' # Use variable for port mapping
+      - '${PORT}:${PORT}'
     depends_on:
       - db
     env_file:
-      - .env # Load environment variables from .env file
+      - .env
+    volumes:
+      # Syncs your local code with the code in the container
+      - .:/usr/src/app
+      # Prevents the local node_modules from overwriting the container's
+      - /usr/src/app/node_modules
 
   # PostgreSQL Database Service
   db:
     image: postgres:13
     ports:
-      - '${POSTGRES_PORT}:${POSTGRES_PORT}' # Use variable for port mapping
-    env_file:
-      - .env # Load environment variables from .env file
+      - '${POSTGRES_PORT}:${POSTGRES_PORT}'
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
