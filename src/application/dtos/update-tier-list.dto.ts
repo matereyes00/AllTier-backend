@@ -1,4 +1,6 @@
-import { IsString, IsArray, IsOptional } from 'class-validator';
+import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
+import { UpdateItemDto } from './update-item.dto';
 
 export class UpdateTierListDto {
   @IsString()
@@ -6,7 +8,8 @@ export class UpdateTierListDto {
   tierListName?: string;
 
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => UpdateItemDto)
   @IsOptional()
-  items?: string[];
+  items?: UpdateItemDto[];
 }

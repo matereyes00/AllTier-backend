@@ -5,42 +5,47 @@ import { TierList } from '../../../domain/entities/tier.list.entity';
 import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
 import { User } from '../../../domain/entities/user.entity';
+import { Item } from 'src/domain/entities/item.entity';
 
 @Injectable()
 export class TierListRepository {
   constructor(
     @InjectRepository(TierList)
-    private readonly ormRepository: Repository<TierList>,
+    private readonly tierListRepository: Repository<TierList>,
+    @InjectRepository(Item)
+    private readonly itemRepository: Repository<Item>,
   ) {}
 
   create(createTierListDto: CreateTierListDto, user: User): Promise<TierList> {
-    const tierList = this.ormRepository.create({
-      ...createTierListDto,
+    const tierList = this.tierListRepository.create({
+      tierListName: createTierListDto.tierListName,
       user,
+      // TypeORM will automatically create the Item entities from the DTO
+      items: createTierListDto.items,
     });
-    return this.ormRepository.save(tierList);
+    return this.tierListRepository.save(tierList);
   }
 
   findAllByUserId(userId: string): Promise<TierList[]> {
-    return this.ormRepository.find({
+    return this.tierListRepository.find({
       where: { user: { userId } },
       relations: ['user'], // Optional: include user data in the response
     });
   }
 
   findById(id: string): Promise<TierList | null> {
-    return this.ormRepository.findOne({
+    return this.tierListRepository.findOne({
       where: { tierListId: id },
       relations: ['user'],
     });
   }
 
   async update(tierList: TierList, updateTierListDto: UpdateTierListDto): Promise<TierList> {
-    this.ormRepository.merge(tierList, updateTierListDto);
-    return this.ormRepository.save(tierList);
+    this.tierListRepository.merge(tierList, updateTierListDto);
+    return this.tierListRepository.save(tierList);
   }
 
   async remove(tierList: TierList): Promise<void> {
-    await this.ormRepository.remove(tierList);
+    await this.tierListRepository.remove(tierList);
   }
 }

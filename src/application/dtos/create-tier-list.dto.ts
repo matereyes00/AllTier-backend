@@ -1,11 +1,14 @@
-import { IsString, IsArray, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { CreateItemDto } from './create-item.dto';
 
 export class CreateTierListDto {
   @IsString()
   tierListName: string;
 
   @IsArray()
-  @IsString({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => CreateItemDto)
   @IsOptional()
-  items?: string[];
+  items?: CreateItemDto[];
 }

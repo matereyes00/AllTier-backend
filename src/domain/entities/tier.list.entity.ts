@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { User } from './user.entity';
+import { Item } from './item.entity';
 
 @Entity()
 export class TierList {
@@ -12,6 +13,6 @@ export class TierList {
   @ManyToOne(() => User, (user) => user.tierLists)
   user: User;
 
-  @Column('simple-array', { default: [] })
-  items: string[];
+  @OneToMany(() => Item, (item) => item.tierList, { cascade: true, eager: true })
+  items: Item[];
 }
