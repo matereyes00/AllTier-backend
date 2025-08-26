@@ -1,4 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+// user.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { TierList } from './tier.list.entity';
+import { Rating } from './rating.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 export class User {
@@ -11,6 +15,15 @@ export class User {
   @Column()
   password: string;
 
-  @Column('simple-array', { default: [] })
-  tierLists: string[];
+  // A user can have many tier lists
+  @OneToMany(() => TierList, (tierList) => tierList.user)
+  tierLists: TierList[];
+
+  // A user can have many ratings
+  @OneToMany(() => Rating, (rating) => rating.user)
+  ratings: Rating[];
+
+  // A user can also have many comments
+  @OneToMany(() => Comment, (comment) => comment.user)
+  comments: Comment[];
 }

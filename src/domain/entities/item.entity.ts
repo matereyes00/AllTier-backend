@@ -1,5 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+// item.entity.ts
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { TierList } from './tier.list.entity';
+import { Rating } from './rating.entity';
 
 @Entity()
 export class Item {
@@ -9,7 +11,11 @@ export class Item {
   @Column()
   itemName: string;
 
-  // This defines the relationship: Many Items belong to One TierList.
-  @ManyToOne(() => TierList, (tierList) => tierList.items)
+  // Many items belong to one TierList
+  @ManyToOne(() => TierList, (tierList) => tierList.items, { onDelete: 'CASCADE' })
   tierList: TierList;
+
+  // One item can have many ratings
+  @OneToMany(() => Rating, (rating) => rating.item)
+  ratings: Rating[];
 }
