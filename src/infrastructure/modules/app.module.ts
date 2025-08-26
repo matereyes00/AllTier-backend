@@ -9,12 +9,13 @@ import { dataSourceOptions } from '../database/data.source'
 import { RatingModule } from './rating.module';
 import { ItemModule } from './item.module';
 import { CommentsModule } from './comments.module';
+import { UsersModule } from './users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(dataSourceOptions),
-    AuthModule,
+    AuthModule, UsersModule,
     TierListModule, ItemModule,
     RatingModule, CommentsModule
   ],
