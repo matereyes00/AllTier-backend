@@ -19,8 +19,8 @@ export class TierListRepository {
   create(createTierListDto: CreateTierListDto, user: User): Promise<TierList> {
     const tierList = this.tierListRepository.create({
       tierListName: createTierListDto.tierListName,
+      tierListType: createTierListDto.tierListType,
       user,
-      // TypeORM will automatically create the Item entities from the DTO
       items: createTierListDto.items,
     });
     return this.tierListRepository.save(tierList);

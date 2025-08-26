@@ -5,6 +5,6 @@ export const CurrentUser = createParamDecorator(
         const request = ctx.switchToHttp().getRequest();
         // console.log("Request in CurrentUser:", request); // Check the request
         // console.log("Request User in CurrentUser:", request.currentUser); // Check request.user
-        return request.currentUser;
+        return request.user;
     }
 )

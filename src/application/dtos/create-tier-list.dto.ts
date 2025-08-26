@@ -6,6 +6,9 @@ export class CreateTierListDto {
   @IsString()
   tierListName: string;
 
+  @IsString()
+  tierListType: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateItemDto)

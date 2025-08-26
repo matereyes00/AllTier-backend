@@ -3,5 +3,4 @@ import { ItemRepository } from "src/infrastructure/database/repositories/item.re
 
 export class CommentsService {
       constructor(private readonly commentRepository: CommentsRepository) {}
-    
 }

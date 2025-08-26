@@ -4,7 +4,7 @@ import { TierListService } from '../../../application/services/tier.list.service
 import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
 
-// @UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'))
 @Controller('tierlists')
 export class TierListController {
   constructor(private readonly tierListService: TierListService) {}

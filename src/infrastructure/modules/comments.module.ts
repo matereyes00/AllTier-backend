@@ -6,6 +6,7 @@ import { Item } from 'src/domain/entities/item.entity';
 import { CommentsService } from 'src/application/services/comments.service';
 import { CommentsRepository } from '../database/repositories/comments.repository';
 import { CommentsController } from '../http/controllers/comments.controller';
+import { Comment } from 'src/domain/entities/comment.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Comment]), AuthModule],
