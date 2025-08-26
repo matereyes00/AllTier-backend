@@ -8,22 +8,22 @@ import { CreateUserDto } from '../../../application/dtos/create-user.dto';
 export class UserRepository {
   constructor(
     @InjectRepository(User)
-    private readonly ormRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.ormRepository.findOne({ where: { username } });
+    return this.userRepository.findOne({ where: { username } });
   }
 
   async findById(userId: string): Promise<User | null> {
-    return this.ormRepository.findOne({ where: { userId } });
+    return this.userRepository.findOne({ where: { userId } });
   }
 
   async create(createUserDto: CreateUserDto, hashedPassword): Promise<User> {
-    const user = this.ormRepository.create({
+    const user = this.userRepository.create({
       ...createUserDto,
       password: hashedPassword,
     });
-    return this.ormRepository.save(user);
+    return this.userRepository.save(user);
   }
 }
