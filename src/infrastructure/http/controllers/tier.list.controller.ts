@@ -13,17 +13,20 @@ import { TierListService } from '../../../application/services/tier.list.service
 import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
+  ApiNotFoundResponse,
   ApiOperation,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
 
-@UseGuards(AuthGuard('jwt'))
 @ApiBearerAuth()
 @Controller('tierlists')
+@UseGuards(AuthGuard('jwt'))
 export class TierListController {
   constructor(private readonly tierListService: TierListService) {}
 
@@ -32,6 +35,10 @@ export class TierListController {
     summary: 'Create a tier list for the logged in user',
   })
   @ApiBody({ type: CreateTierListDto })
+  @ApiForbiddenResponse({
+    description: 'You must be logged in to create a tier list',
+  })
+  @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   create(
     @Body() createTierListDto: CreateTierListDto,
@@ -44,6 +51,9 @@ export class TierListController {
   @ApiOperation({
     summary: 'Get all tier lists for the logged in user',
   })
+  @ApiNotFoundResponse({
+    description: 'No tier lists found for the logged in user',
+  })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   findAllForUser(@CurrentUser() user: User) {
     return this.tierListService.findAllForUser(user.userId);
@@ -53,6 +63,10 @@ export class TierListController {
   @ApiOperation({
     summary: 'Get a specific tier list owned by the logged in user',
   })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
+  })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.findOne(id, user.userId);
@@ -61,6 +75,10 @@ export class TierListController {
   @Patch('update-tier-list/:id')
   @ApiOperation({
     summary: 'Update a tier list for the current logged in user',
+  })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   update(
@@ -74,6 +92,10 @@ export class TierListController {
   @Delete('remove-tier-list/:id')
   @ApiOperation({
     summary: 'Delete a tier list for the current logged in user',
+  })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   remove(@Param('id') id: string, @CurrentUser() user: User) {

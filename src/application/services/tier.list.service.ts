@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Injectable,
   NotFoundException,
   ForbiddenException,
+  BadRequestException,
 } from '@nestjs/common';
 import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
 import { CreateTierListDto } from '../dtos/create-tier-list.dto';
@@ -17,11 +19,31 @@ export class TierListService {
     createTierListDto: CreateTierListDto,
     user: User,
   ): Promise<TierList> {
-    return this.tierListRepository.create(createTierListDto, user);
+    if (!user) {
+      throw new ForbiddenException(
+        'You must be logged in to create a tier list',
+      );
+    }
+    if (!createTierListDto.tierListName) {
+      throw new BadRequestException('Tier list must have a title');
+    }
+    try {
+      return await this.tierListRepository.create(createTierListDto, user);
+    } catch (err) {
+      throw new BadRequestException(
+        'Something went wrong while creating the tier list.',
+      );
+    }
   }
 
   async findAllForUser(userId: string): Promise<TierList[]> {
-    return this.tierListRepository.findAllByUserId(userId);
+    const tierLists = await this.tierListRepository.findAllByUserId(userId);
+
+    if (!tierLists || tierLists.length === 0) {
+      throw new NotFoundException(`No tier lists found for user ${userId}`);
+    }
+
+    return tierLists;
   }
 
   async findOne(id: string, userId: string): Promise<TierList> {
@@ -43,11 +65,27 @@ export class TierListService {
     userId: string,
   ): Promise<TierList> {
     const tierList = await this.findOne(id, userId); // findOne includes ownership check
+    if (!tierList) {
+      throw new NotFoundException(`TierList with ID "${id}" not found`);
+    }
+    if (tierList.user.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this tier list',
+      );
+    }
     return this.tierListRepository.update(tierList, updateTierListDto);
   }
 
   async remove(id: string, userId: string): Promise<void> {
     const tierList = await this.findOne(id, userId); // findOne includes ownership check
+    if (!tierList) {
+      throw new NotFoundException(`TierList with ID "${id}" not found`);
+    }
+    if (tierList.user.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this tier list',
+      );
+    }
     await this.tierListRepository.remove(tierList);
   }
 }
