@@ -10,4 +10,8 @@ export class UsersService {
     const user_ = await this.userRepository.findById(user.userId);
     return user_;
   }
+
+  async incrementLoginCount(userId: string) {
+    await this.userRepository.incrementLoginCount(userId);
+  }
 }

@@ -23,6 +23,8 @@ import {
   ApiResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { CurrentUser } from '../decorators/current.user.decorator';
+import { User } from 'src/domain/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -61,9 +63,8 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'API endpoint for the user to exit their account' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  logout() {
-    // In a real-world scenario, you might want to implement token blacklisting.
-    // For this example, we'll just send a success message.
+  async logout(@CurrentUser() user: User) {
+    await this.authService.logout(user.userId);
     return { message: 'Logged out successfully' };
   }
 }

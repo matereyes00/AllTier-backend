@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   Injectable,
   UnauthorizedException,
@@ -10,12 +11,14 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { LoginUserDto } from '../dtos/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../domain/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<User> {
@@ -48,9 +51,20 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      accessToken: this.jwtService.sign(payload),
+    const payload = {
+      username: user.username,
+      sub: user.userId,
+      tokenVersion: user.tokenVersion,
     };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET || 'defaultSecret',
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
+    });
+
+    return { accessToken };
+  }
+  async logout(userId: string): Promise<void> {
+    await this.userRepository.incrementLoginCount(userId);
   }
 }

@@ -26,4 +26,7 @@ export class User {
   // A user can also have many comments
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @Column({ default: 0 })
+  tokenVersion: number; // 👈 used for invalidating old tokens
 }

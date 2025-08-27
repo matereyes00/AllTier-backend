@@ -34,4 +34,8 @@ export class UserRepository {
     if (!user) throw new NotFoundException('User not found');
     return this.userRepository.save(user);
   }
+
+  async incrementLoginCount(userId: string) {
+    return this.userRepository.increment({ userId }, 'tokenVersion', 1);
+  }
 }

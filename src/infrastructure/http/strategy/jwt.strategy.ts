@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { AuthService } from '../../../application/services/auth.service';
+import { AuthService } from 'src/application/services/auth.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../../domain/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -20,13 +23,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.userRepository.findOne({ where: { userId: payload.sub } });
+    const user = await this.userRepository.findOne({
+      where: { userId: payload.sub },
+    });
     if (!user) {
       throw new UnauthorizedException();
     }
     // You can return the whole user object or just parts of it.
     // The returned value will be attached to the request object as req.user
     const { password, ...result } = user;
+
+    if (payload.tokenVersion !== user.tokenVersion) {
+      throw new UnauthorizedException(
+        'Token is no longer valid, please log in again',
+      );
+    }
     return result;
   }
 }
