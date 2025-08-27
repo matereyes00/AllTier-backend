@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
+import { UpdateUserDto } from 'src/application/dtos/update-profile.dto';
 
 @Injectable()
 export class UserRepository {
@@ -24,6 +25,12 @@ export class UserRepository {
       ...createUserDto,
       password: hashedPassword,
     });
+    return this.userRepository.save(user);
+  }
+
+  async edit(updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.userRepository.preload(updateUserDto);
+    if (!user) throw new NotFoundException('User not found');
     return this.userRepository.save(user);
   }
 }

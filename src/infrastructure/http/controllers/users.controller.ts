@@ -28,4 +28,9 @@ export class UsersController {
   getProfile(@CurrentUser() user: User) {
     return this.usersService.getMyProfile(user);
   }
+
+  @Patch('me/edit-profile')
+  updateProfile(@CurrentUser() user: User) {
+    return this.usersRepository.edit(user)
+  }
 }
