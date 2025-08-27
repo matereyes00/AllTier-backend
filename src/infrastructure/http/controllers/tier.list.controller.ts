@@ -12,7 +12,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
 import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiInternalServerErrorResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
 
@@ -27,6 +32,7 @@ export class TierListController {
     summary: 'Create a tier list for the logged in user',
   })
   @ApiBody({ type: CreateTierListDto })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   create(
     @Body() createTierListDto: CreateTierListDto,
     @CurrentUser() user: User,
@@ -38,6 +44,7 @@ export class TierListController {
   @ApiOperation({
     summary: 'Get all tier lists for the logged in user',
   })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   findAllForUser(@CurrentUser() user: User) {
     return this.tierListService.findAllForUser(user.userId);
   }
@@ -46,6 +53,7 @@ export class TierListController {
   @ApiOperation({
     summary: 'Get a specific tier list owned by the logged in user',
   })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.findOne(id, user.userId);
   }
@@ -54,6 +62,7 @@ export class TierListController {
   @ApiOperation({
     summary: 'Update a tier list for the current logged in user',
   })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   update(
     @Param('id') id: string,
     @Body() updateTierListDto: UpdateTierListDto,
@@ -66,6 +75,7 @@ export class TierListController {
   @ApiOperation({
     summary: 'Delete a tier list for the current logged in user',
   })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.remove(id, user.userId);
   }

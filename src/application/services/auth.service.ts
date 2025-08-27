@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../../infrastructure/database/repositories/user.repository';
 import { CreateUserDto } from '../dtos/create-user.dto';
@@ -26,8 +31,11 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    
-    const user = await this.userRepository.create(createUserDto, hashedPassword);
+
+    const user = await this.userRepository.create(
+      createUserDto,
+      hashedPassword,
+    );
     // delete user.password;
     return user;
   }

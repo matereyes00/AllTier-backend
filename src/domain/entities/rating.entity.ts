@@ -1,5 +1,11 @@
 // rating.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { Item } from './item.entity';
 import { User } from './user.entity';
 import { Comment } from './comment.entity';

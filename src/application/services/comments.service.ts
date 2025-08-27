@@ -1,6 +1,5 @@
-import { CommentsRepository } from "src/infrastructure/database/repositories/comments.repository";
-import { ItemRepository } from "src/infrastructure/database/repositories/item.repository";
+import { CommentsRepository } from 'src/infrastructure/database/repositories/comments.repository';
 
 export class CommentsService {
-      constructor(private readonly commentRepository: CommentsRepository) {}
+  constructor(private readonly commentRepository: CommentsRepository) {}
 }
