@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Item } from './item.entity';
 import { TierListType } from '../enum/tier.list.enum';
@@ -17,6 +23,9 @@ export class TierList {
   @ManyToOne(() => User, (user) => user.tierLists)
   user: User;
 
-  @OneToMany(() => Item, (item) => item.tierList, { cascade: true, eager: true })
+  @OneToMany(() => Item, (item) => item.tierList, {
+    cascade: true,
+    eager: true,
+  })
   items: Item[];
 }

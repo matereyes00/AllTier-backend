@@ -1,37 +1,72 @@
-import { Controller, Post, Body, UseGuards, Request, Get, Param, Patch, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Get,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
 import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
+import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
+import { CurrentUser } from '../decorators/current.user.decorator';
+import { User } from 'src/domain/entities/user.entity';
 
 @UseGuards(AuthGuard('jwt'))
+@ApiBearerAuth()
 @Controller('tierlists')
 export class TierListController {
   constructor(private readonly tierListService: TierListService) {}
 
   @Post('create-tier-list')
-  create(@Body() createTierListDto: CreateTierListDto, @Request() req) {
-    // req.user is attached by the JwtStrategy
-    return this.tierListService.create(createTierListDto, req.user);
+  @ApiOperation({
+    summary: 'Create a tier list for the logged in user',
+  })
+  @ApiBody({ type: CreateTierListDto })
+  create(
+    @Body() createTierListDto: CreateTierListDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.tierListService.create(createTierListDto, user);
   }
 
-  @Get()
-  findAllForUser(@Request() req) {
-    return this.tierListService.findAllForUser(req.user.userId);
+  @Get('my-tier-lists')
+  @ApiOperation({
+    summary: 'Get all tier lists for the logged in user',
+  })
+  findAllForUser(@CurrentUser() user: User) {
+    return this.tierListService.findAllForUser(user.userId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string, @Request() req) {
-    return this.tierListService.findOne(id, req.user.userId);
+  @Get('my-tier-list/:id')
+  @ApiOperation({
+    summary: 'Get a specific tier list owned by the logged in user',
+  })
+  findOne(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.tierListService.findOne(id, user.userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTierListDto: UpdateTierListDto, @Request() req) {
-    return this.tierListService.update(id, updateTierListDto, req.user.userId);
+  @Patch('update-tier-list/:id')
+  @ApiOperation({
+    summary: 'Update a tier list for the current logged in user',
+  })
+  update(
+    @Param('id') id: string,
+    @Body() updateTierListDto: UpdateTierListDto,
+    @CurrentUser() user: User,
+  ) {
+    return this.tierListService.update(id, updateTierListDto, user.userId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string, @Request() req) {
-    return this.tierListService.remove(id, req.user.userId);
+  @Delete('remove-tier-list/:id')
+  @ApiOperation({
+    summary: 'Delete a tier list for the current logged in user',
+  })
+  remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.tierListService.remove(id, user.userId);
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -40,7 +41,10 @@ export class TierListRepository {
     });
   }
 
-  async update(tierList: TierList, updateTierListDto: UpdateTierListDto): Promise<TierList> {
+  async update(
+    tierList: TierList,
+    updateTierListDto: UpdateTierListDto,
+  ): Promise<TierList> {
     this.tierListRepository.merge(tierList, updateTierListDto);
     return this.tierListRepository.save(tierList);
   }
