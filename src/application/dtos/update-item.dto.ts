@@ -1,10 +1,12 @@
-import { IsString, IsOptional, IsUUID } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class UpdateItemDto {
-  @IsUUID()
-  @IsOptional()
-  itemId?: string; // Include ID for existing items, omit for new ones
-
   @IsString()
+  @ApiProperty({
+    type: String,
+    example: 'Item 1',
+    description: 'This is the name of the item to be updated.',
+  })
   itemName: string;
 }

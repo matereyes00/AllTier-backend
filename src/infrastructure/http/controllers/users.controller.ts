@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Controller,
   Post,
@@ -31,6 +32,6 @@ export class UsersController {
 
   @Patch('me/edit-profile')
   updateProfile(@CurrentUser() user: User) {
-    return this.usersRepository.edit(user)
+    return this.usersRepository.edit(user);
   }
 }

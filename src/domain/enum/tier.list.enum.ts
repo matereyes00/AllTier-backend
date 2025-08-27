@@ -1,4 +1,4 @@
 export enum TierListType {
-    TOURNAMENT = 'tournament',
-    RANKED = 'ranked',
+  TOURNAMENT = 'tournament',
+  RANKED = 'ranked',
 }
