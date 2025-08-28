@@ -19,7 +19,7 @@ export class CommentsService {
   ): Promise<Comment> {
     const tierList = await this.tierListRepository.findById(tierListId)
     if (!tierList) {
-    throw new NotFoundException(`TierList with id ${tierListId} not found`);
+      throw new NotFoundException(`TierList with id ${tierListId} not found`);
     }
     if (!user) {
       throw new ForbiddenException(
@@ -30,7 +30,6 @@ export class CommentsService {
     try {
       return comment;
     } catch (err) {
-      console.error('Comment creation error:', err);  // 👈 check actual error
       throw new BadRequestException(
         'Something went wrong while creating the comment.',
       );

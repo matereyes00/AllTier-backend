@@ -29,4 +29,19 @@ export class BaseRepository<T extends ObjectLiteral> {
       relations,
     });
   }
+
+  async findAllByRelationId(
+    relationKey: keyof T,    // e.g. "tierList", "user"
+    relationIdKey: string,   // e.g. "tierListId", "userId"
+    relationId: string,      // actual id value
+    relations: FindOptionsRelations<T> = {}
+  ): Promise<T[]> {
+    return this.repository.find({
+      where: {
+        [relationKey]: { [relationIdKey]: relationId },
+      } as any,
+      relations,
+    });
+  }
+
 }
