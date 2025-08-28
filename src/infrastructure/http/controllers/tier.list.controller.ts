@@ -49,6 +49,19 @@ export class TierListController {
     return this.tierListService.create(createTierListDto, user);
   }
 
+  @Get('all-tier-lists')
+  @ApiOperation({
+    summary: 'Get all tier lists',
+  })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
+  })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
+  async findAll() {
+    return this.tierListService.findAll();
+  }
+
   @Get('my-tier-lists')
   // @UseInterceptors(TierListInterceptor)
   @ApiOperation({

@@ -8,9 +8,10 @@ import { AuthModule } from './auth.module';
 import { Item } from 'src/domain/entities/item.entity';
 import { User } from 'src/domain/entities/user.entity';
 import { Like } from 'src/domain/entities/like.entity';
+import { LikesModule } from './likes.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TierList, Item, User, Like]), AuthModule],
+  imports: [TypeOrmModule.forFeature([TierList, Item, User, Like]), AuthModule, LikesModule],
   controllers: [TierListController],
   providers: [TierListService, TierListRepository],
 })

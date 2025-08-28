@@ -8,6 +8,10 @@ export class BaseRepository<T extends ObjectLiteral> {
     this.repository = dataSource.getRepository<T>(entity);
   }
 
+  async findAll(relations: FindOptionsRelations<T> = {}): Promise<T[]> {
+    return this.repository.find({ relations });
+  }
+
   async findById(
     idKey: keyof T,
     id: string,

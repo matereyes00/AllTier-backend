@@ -10,10 +10,14 @@ import { CreateTierListDto } from '../dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../dtos/TierList/update-tier-list.dto';
 import { User } from '../../domain/entities/user.entity';
 import { TierList } from '../../domain/entities/tier.list.entity';
+// import { LikeRepository } from 'src/infrastructure/database/repositories/like.repository';
 
 @Injectable()
 export class TierListService {
-  constructor(private readonly tierListRepository: TierListRepository) {}
+  constructor(
+    private readonly tierListRepository: TierListRepository,
+    // private readonly likesRepository: LikeRepository
+  ) {}
 
   async create(
     createTierListDto: CreateTierListDto,
@@ -36,7 +40,15 @@ export class TierListService {
     }
   }
 
-  // get all tier lists
+  async findAll() {
+    const allTierLists = await this.tierListRepository.findAll({
+      user: true,
+      likes: true,
+      items: true,
+      comments: true,
+    });
+    return allTierLists;
+  }
 
   async findAllForUser(userId: string): Promise<TierList[]> {
     const tierLists = await this.tierListRepository.findAllByUserId(userId);
@@ -52,11 +64,11 @@ export class TierListService {
     if (!tierList) {
       throw new NotFoundException(`TierList with ID "${id}" not found`);
     }
-    if (tierList.user.userId !== userId) {
-      throw new ForbiddenException(
-        'You do not have permission to access this tier list',
-      );
-    }
+    // if (tierList.user.userId !== userId) {
+    //   throw new ForbiddenException(
+    //     'You do not have permission to access this tier list',
+    //   );
+    // }
     return tierList;
   }
 
