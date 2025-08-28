@@ -4,23 +4,31 @@ import { User } from 'src/domain/entities/user.entity';
 import { Comment } from 'src/domain/entities/comment.entity';
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateCommentDto } from '../dtos/Comments/update-comment.dto';
+import { TierListRepository } from 'src/infrastructure/database/repositories/tier.list.repository';
 
 @Injectable()
 export class CommentsService {
-  constructor(private readonly commentRepository: CommentsRepository) {}
+  constructor(
+    private readonly tierListRepository: TierListRepository,
+    private readonly commentRepository: CommentsRepository) {}
 
   async createComment(
+    tierListId: string,
     createCommentDto: CreateCommentDto,
     user: User
   ): Promise<Comment> {
+    const tierList = await this.tierListRepository.findById(tierListId)
+    if (!tierList) {
+    throw new NotFoundException(`TierList with id ${tierListId} not found`);
+    }
     if (!user) {
       throw new ForbiddenException(
         'You must be logged in to create a comment',
       );
     }
-    
+    const comment = await this.commentRepository.create(createCommentDto, user, tierList);
     try {
-      return await this.commentRepository.create(createCommentDto, user);
+      return comment;
     } catch (err) {
       console.error('Comment creation error:', err);  // 👈 check actual error
       throw new BadRequestException(

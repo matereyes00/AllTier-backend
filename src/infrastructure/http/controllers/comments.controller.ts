@@ -13,9 +13,12 @@ import { UpdateCommentDto } from 'src/application/dtos/Comments/update-comment.d
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @Post('create-comment')
-  createComment(@Body() createCommentDto: CreateCommentDto, @CurrentUser() user: User) {
-    return this.commentsService.createComment(createCommentDto, user)
+  @Post('create-comment/:tierListId')
+  createComment(
+    @Param('tierListId') tierListId: string,
+    @Body() createCommentDto: CreateCommentDto, 
+    @CurrentUser() user: User) {
+    return this.commentsService.createComment(tierListId, createCommentDto, user)
   }
 
   @Patch('edit-comment/:id')

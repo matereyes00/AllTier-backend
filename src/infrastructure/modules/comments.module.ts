@@ -7,11 +7,12 @@ import { CommentsService } from 'src/application/services/comments.service';
 import { CommentsRepository } from '../database/repositories/comments.repository';
 import { CommentsController } from '../http/controllers/comments.controller';
 import { Comment } from 'src/domain/entities/comment.entity';
+import { TierListRepository } from '../database/repositories/tier.list.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Comment]), AuthModule],
+  imports: [TypeOrmModule.forFeature([Comment, TierList, Item]), AuthModule],
   controllers: [CommentsController],
-  providers: [CommentsService, CommentsRepository],
+  providers: [CommentsService, CommentsRepository, TierListRepository],
   exports: [CommentsService],
 })
 export class CommentsModule {}

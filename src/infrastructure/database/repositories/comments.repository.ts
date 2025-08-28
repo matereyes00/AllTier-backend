@@ -6,6 +6,7 @@ import { Comment } from "src/domain/entities/comment.entity";
 import { User } from "src/domain/entities/user.entity";
 import { DataSource, Repository } from "typeorm";
 import { BaseRepository } from "./base.repository";
+import { TierList } from "src/domain/entities/tier.list.entity";
 
 @Injectable()
 export class CommentsRepository extends BaseRepository<Comment> {
@@ -17,10 +18,15 @@ export class CommentsRepository extends BaseRepository<Comment> {
     super(Comment, dataSource)
   }
 
-  create(createCommentDto: CreateCommentDto, user: User): Promise<Comment> {
+  create(
+    createCommentDto: CreateCommentDto, 
+    user: User,
+    tierList: TierList
+  ): Promise<Comment> {
     const comment = this.commentsRepository.create({
       commentText: createCommentDto.commentText,
-      user
+      user,
+      tierList
     })
     return this.commentsRepository.save(comment)
   }
@@ -34,7 +40,11 @@ export class CommentsRepository extends BaseRepository<Comment> {
   }
 
   async findById(id: string): Promise<Comment | null> {
-    return super.findById('commentId', id, { user: true });
+    return super.findById('commentId', id, { 
+      user: true,
+      tierList: true,
+      rating: true
+    });
   }
 
 }
