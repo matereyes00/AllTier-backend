@@ -40,7 +40,7 @@ export class TierListController {
   })
   @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  create(
+  async create(
     @Body() createTierListDto: CreateTierListDto,
     @CurrentUser() user: User,
   ) {
@@ -55,8 +55,12 @@ export class TierListController {
     description: 'No tier lists found for the logged in user',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  findAllForUser(@CurrentUser() user: User) {
-    return this.tierListService.findAllForUser(user.userId);
+  async findAllForUser(@CurrentUser() user: User) {
+    var tierLists = await this.tierListService.findAllForUser(user.userId);
+    return {
+      message: tierLists.length ? 'Tier lists found' : 'No tier lists found',
+      data: tierLists,
+    };
   }
 
   @Get('my-tier-list/:id')
@@ -68,7 +72,7 @@ export class TierListController {
     description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  findOne(@Param('id') id: string, @CurrentUser() user: User) {
+  async findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.findOne(id, user.userId);
   }
 
@@ -81,7 +85,7 @@ export class TierListController {
     description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateTierListDto: UpdateTierListDto,
     @CurrentUser() user: User,
@@ -98,7 +102,7 @@ export class TierListController {
     description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
-  remove(@Param('id') id: string, @CurrentUser() user: User) {
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.remove(id, user.userId);
   }
 }

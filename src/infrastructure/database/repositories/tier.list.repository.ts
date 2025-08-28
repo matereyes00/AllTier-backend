@@ -1,21 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { TierList } from '../../../domain/entities/tier.list.entity';
 import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
 import { User } from '../../../domain/entities/user.entity';
 import { Item } from 'src/domain/entities/item.entity';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class TierListRepository {
+export class TierListRepository extends BaseRepository<TierList> {
   constructor(
+    private dataSource: DataSource,
     @InjectRepository(TierList)
     private readonly tierListRepository: Repository<TierList>,
     @InjectRepository(Item)
     private readonly itemRepository: Repository<Item>,
-  ) {}
+  ) {
+    super(TierList, dataSource)
+  }
 
   create(createTierListDto: CreateTierListDto, user: User): Promise<TierList> {
     const tierList = this.tierListRepository.create({
@@ -27,18 +31,12 @@ export class TierListRepository {
     return this.tierListRepository.save(tierList);
   }
 
-  findAllByUserId(userId: string): Promise<TierList[]> {
-    return this.tierListRepository.find({
-      where: { user: { userId } },
-      relations: ['user'], // Optional: include user data in the response
-    });
+  async findById(id: string): Promise<TierList | null> {
+    return super.findById('tierListId', id, { user: true });
   }
 
-  findById(id: string): Promise<TierList | null> {
-    return this.tierListRepository.findOne({
-      where: { tierListId: id },
-      relations: ['user'],
-    });
+  async findAllByUserId(userId: string): Promise<TierList[]> {
+    return super.findAllByUserId('user', userId, { user: true });
   }
 
   async update(

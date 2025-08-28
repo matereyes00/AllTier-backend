@@ -1,10 +1,11 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateCommentDto } from 'src/application/dtos/Comments/create-comment.dto';
 import { CommentsService } from 'src/application/services/comments.service';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { UpdateCommentDto } from 'src/application/dtos/Comments/update-comment.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -15,5 +16,13 @@ export class CommentsController {
   @Post('create-comment')
   createComment(@Body() createCommentDto: CreateCommentDto, @CurrentUser() user: User) {
     return this.commentsService.createComment(createCommentDto, user)
+  }
+
+  @Patch('edit-comment/:id')
+  editComment(
+    @Param('id') id: string,
+    @Body() updateCommentDto: UpdateCommentDto, 
+    @CurrentUser() user: User) {
+    return this.commentsService.updateComment(id, updateCommentDto, user.userId)
   }
 }

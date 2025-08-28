@@ -4,6 +4,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { Item } from './item.entity';
@@ -46,10 +48,10 @@ export class TierList {
   @Column({ default: 0 })
   commentCount: number;
 
-  @Column({ type: 'date' })
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;
 
-  @Column({ type: 'date' })
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
 
 }

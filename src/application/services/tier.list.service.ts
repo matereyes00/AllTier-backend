@@ -38,11 +38,10 @@ export class TierListService {
 
   async findAllForUser(userId: string): Promise<TierList[]> {
     const tierLists = await this.tierListRepository.findAllByUserId(userId);
-
     if (!tierLists || tierLists.length === 0) {
-      throw new NotFoundException(`No tier lists found for user ${userId}`);
+      // throw new NotFoundException(`No tier lists found for user ${userId}`);
+      return [];
     }
-
     return tierLists;
   }
 
