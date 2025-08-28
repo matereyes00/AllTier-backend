@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { TierList } from '../../../domain/entities/tier.list.entity';
-import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
-import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
+import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
+import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
 import { User } from '../../../domain/entities/user.entity';
 import { Item } from 'src/domain/entities/item.entity';
 

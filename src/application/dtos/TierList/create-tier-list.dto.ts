@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer';
 import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
-import { CreateItemDto } from './create-item.dto';
+import { CreateItemDto } from '../Items/create-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTierListDto {

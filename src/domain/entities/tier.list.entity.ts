@@ -8,6 +8,7 @@ import {
 import { User } from './user.entity';
 import { Item } from './item.entity';
 import { TierListType } from '../enum/tier.list.enum';
+import { Comment } from './comment.entity';
 
 @Entity()
 export class TierList {
@@ -20,6 +21,7 @@ export class TierList {
   @Column({ type: 'enum', enum: TierListType })
   tierListType: string;
 
+  // creator
   @ManyToOne(() => User, (user) => user.tierLists)
   user: User;
 
@@ -28,4 +30,26 @@ export class TierList {
     eager: true,
   })
   items: Item[];
+
+  @OneToMany(() => Comment, (comment) => comment.tierList, {
+    cascade: true,
+    eager: true,
+  })
+  comments: Comment[];
+
+  @Column({ default: 0 })
+  itemCount: number;
+
+  @Column({ default: 0 })
+  ratingCount: number;
+
+  @Column({ default: 0 })
+  commentCount: number;
+
+  @Column({ type: 'date' })
+  createdAt: string;
+
+  @Column({ type: 'date' })
+  updatedAt: string;
+
 }

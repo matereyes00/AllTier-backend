@@ -1,6 +1,6 @@
 import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { UpdateItemDto } from './update-item.dto';
+import { UpdateItemDto } from '../Items/update-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateTierListDto {

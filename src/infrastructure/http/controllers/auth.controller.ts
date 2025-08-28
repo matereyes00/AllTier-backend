@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from '../../../application/services/auth.service';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
-import { LoginUserDto } from '../../../application/dtos/login-user.dto';
+import { LoginUserDto } from '../../../application/dtos/Auth/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import {
   ApiBadRequestResponse,

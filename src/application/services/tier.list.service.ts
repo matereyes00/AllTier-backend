@@ -6,8 +6,8 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
-import { CreateTierListDto } from '../dtos/create-tier-list.dto';
-import { UpdateTierListDto } from '../dtos/update-tier-list.dto';
+import { CreateTierListDto } from '../dtos/TierList/create-tier-list.dto';
+import { UpdateTierListDto } from '../dtos/TierList/update-tier-list.dto';
 import { User } from '../../domain/entities/user.entity';
 import { TierList } from '../../domain/entities/tier.list.entity';
 

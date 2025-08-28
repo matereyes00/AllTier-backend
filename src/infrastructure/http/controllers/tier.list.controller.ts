@@ -10,8 +10,8 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
-import { CreateTierListDto } from '../../../application/dtos/create-tier-list.dto';
-import { UpdateTierListDto } from '../../../application/dtos/update-tier-list.dto';
+import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
+import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,

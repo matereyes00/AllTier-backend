@@ -12,5 +12,6 @@ import { Comment } from 'src/domain/entities/comment.entity';
   imports: [TypeOrmModule.forFeature([Comment]), AuthModule],
   controllers: [CommentsController],
   providers: [CommentsService, CommentsRepository],
+  exports: [CommentsService],
 })
 export class CommentsModule {}
