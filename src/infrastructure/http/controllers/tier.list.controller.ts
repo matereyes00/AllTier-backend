@@ -59,7 +59,6 @@ export class TierListController {
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   async findAllForUser(@CurrentUser() user: User) {
-    console.log(`>> Inside get my-tier-lists`)
     var tierLists = await this.tierListService.findAllForUser(user.userId);
     return tierLists;
   }

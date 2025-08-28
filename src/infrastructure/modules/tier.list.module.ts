@@ -6,9 +6,11 @@ import { TierListService } from '../../application/services/tier.list.service';
 import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
 import { AuthModule } from './auth.module';
 import { Item } from 'src/domain/entities/item.entity';
+import { User } from 'src/domain/entities/user.entity';
+import { Like } from 'src/domain/entities/like.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TierList, Item]), AuthModule],
+  imports: [TypeOrmModule.forFeature([TierList, Item, User, Like]), AuthModule],
   controllers: [TierListController],
   providers: [TierListService, TierListRepository],
 })

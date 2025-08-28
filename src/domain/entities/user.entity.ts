@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { TierList } from './tier.list.entity';
 import { Rating } from './rating.entity';
 import { Comment } from './comment.entity';
+import { Like } from './like.entity';
 
 @Entity()
 export class User {
@@ -29,4 +30,7 @@ export class User {
 
   @Column({ default: 0 })
   tokenVersion: number; // 👈 used for invalidating old tokens
+
+  @OneToMany(() => Like, (like) => like.user)
+  likes: Like[]; 
 }

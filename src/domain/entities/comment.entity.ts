@@ -1,4 +1,3 @@
-// comment.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
 import { User } from './user.entity';
 import { Rating } from './rating.entity';

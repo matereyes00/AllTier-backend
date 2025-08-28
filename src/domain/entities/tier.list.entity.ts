@@ -11,6 +11,7 @@ import { User } from './user.entity';
 import { Item } from './item.entity';
 import { TierListType } from '../enum/tier.list.enum';
 import { Comment } from './comment.entity';
+import { Like } from './like.entity';
 
 @Entity()
 export class TierList {
@@ -56,5 +57,9 @@ export class TierList {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
+
+  @OneToMany(() => Like, (like) => like.tierList)
+  likes: Like[]; 
+
 
 }

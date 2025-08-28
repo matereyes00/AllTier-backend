@@ -36,6 +36,8 @@ export class TierListService {
     }
   }
 
+  // get all tier lists
+
   async findAllForUser(userId: string): Promise<TierList[]> {
     const tierLists = await this.tierListRepository.findAllByUserId(userId);
     if (!tierLists || tierLists.length === 0) {
@@ -75,7 +77,7 @@ export class TierListService {
     return this.tierListRepository.update(tierList, updateTierListDto);
   }
 
-  async remove(id: string, userId: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<string> {
     const tierList = await this.findOne(id, userId); // findOne includes ownership check
     if (!tierList) {
       throw new NotFoundException(`TierList with ID "${id}" not found`);
@@ -85,7 +87,8 @@ export class TierListService {
         'You do not have permission to access this tier list',
       );
     }
-    await this.tierListRepository.remove(tierList);
+    this.tierListRepository.remove(tierList);
+    return `TierList ${tierList.tierListName} (${tierList.tierListId}) removed from database`
   }
 
   async likeTierList(id: string, userId: string): Promise<TierList> {
@@ -93,6 +96,6 @@ export class TierListService {
     if (!tierList) {
       throw new NotFoundException('Tier list not found');
     }
-    return this.tierListRepository.incrementLikes(tierList.tierListId);
+    return this.tierListRepository.incrementLikes(userId, tierList.tierListId);
   }
 }
