@@ -6,8 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
-  Get,
-  Request,
 } from '@nestjs/common';
 import { AuthService } from '../../../application/services/auth.service';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
@@ -20,7 +18,6 @@ import {
   ApiCreatedResponse,
   ApiInternalServerErrorResponse,
   ApiOperation,
-  ApiResponse,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';

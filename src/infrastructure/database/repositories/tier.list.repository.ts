@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { TierList } from '../../../domain/entities/tier.list.entity';
@@ -50,4 +50,19 @@ export class TierListRepository extends BaseRepository<TierList> {
   async remove(tierList: TierList): Promise<void> {
     await this.tierListRepository.remove(tierList);
   }
+
+  async incrementLikes(tierListId: string): Promise<TierList> {
+  await this.tierListRepository.increment(
+    { tierListId }, // condition
+    "likeCount",    // column to increment
+    1               // increment by 1
+  );
+  const updatedTierList = await this.findById(tierListId);
+  if (!updatedTierList) {
+    throw new NotFoundException('Tier list not found');
+  }
+  return updatedTierList;
+}
+
+
 }

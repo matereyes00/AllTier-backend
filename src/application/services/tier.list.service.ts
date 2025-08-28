@@ -87,4 +87,12 @@ export class TierListService {
     }
     await this.tierListRepository.remove(tierList);
   }
+
+  async likeTierList(id: string, userId: string): Promise<TierList> {
+    const tierList = await this.findOne(id, userId);
+    if (!tierList) {
+      throw new NotFoundException('Tier list not found');
+    }
+    return this.tierListRepository.incrementLikes(tierList.tierListId);
+  }
 }

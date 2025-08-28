@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
@@ -23,6 +24,7 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
+import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
 
 @ApiBearerAuth()
 @Controller('tierlists')
@@ -48,6 +50,7 @@ export class TierListController {
   }
 
   @Get('my-tier-lists')
+  // @UseInterceptors(TierListInterceptor)
   @ApiOperation({
     summary: 'Get all tier lists for the logged in user',
   })
@@ -56,11 +59,9 @@ export class TierListController {
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   async findAllForUser(@CurrentUser() user: User) {
+    console.log(`>> Inside get my-tier-lists`)
     var tierLists = await this.tierListService.findAllForUser(user.userId);
-    return {
-      message: tierLists.length ? 'Tier lists found' : 'No tier lists found',
-      data: tierLists,
-    };
+    return tierLists;
   }
 
   @Get('my-tier-list/:id')
@@ -105,4 +106,11 @@ export class TierListController {
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.remove(id, user.userId);
   }
+
+  @UseInterceptors(TierListInterceptor)
+  @Patch('like/:id')
+  likeTierList(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.tierListService.likeTierList(id, user.userId)
+  }
+
 }

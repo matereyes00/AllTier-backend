@@ -48,6 +48,9 @@ export class TierList {
   @Column({ default: 0 })
   commentCount: number;
 
+  @Column({ default: 0 })
+  likeCount: number;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;
 
