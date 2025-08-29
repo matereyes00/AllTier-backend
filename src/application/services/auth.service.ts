@@ -22,11 +22,16 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<User> {
-    const { username, password, confirmPassword } = createUserDto;
+    const { username, password, confirmPassword, email } = createUserDto;
 
     const existingUser = await this.userRepository.findByUsername(username);
     if (existingUser) {
       throw new ConflictException('Username already exists');
+    }
+
+    const existingEmail = await this.userRepository.findByEmail(email);
+    if (existingEmail) {
+      throw new ConflictException('Email already exists');
     }
 
     if (password !== confirmPassword) {

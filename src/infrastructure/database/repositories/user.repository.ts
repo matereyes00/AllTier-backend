@@ -17,6 +17,10 @@ export class UserRepository {
     return this.userRepository.findOne({ where: { username } });
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } });
+  }
+
   async findById(userId: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { userId } });
   }

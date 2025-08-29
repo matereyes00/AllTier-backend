@@ -38,6 +38,7 @@ export class AuthController {
     description: 'User created successfully',
   })
   @ApiConflictResponse({ description: 'User already exists' })
+  @ApiConflictResponse({ description: 'Email already exists' })
   @ApiBadRequestResponse({ description: 'Passwords do not match' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   @HttpCode(HttpStatus.CREATED)

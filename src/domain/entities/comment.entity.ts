@@ -1,7 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  CreateDateColumn,
+} from 'typeorm';
 import { User } from './user.entity';
-import { Rating } from './rating.entity';
 import { TierList } from './tier.list.entity';
+import { CommentVote } from './coment.vote.entity';
 
 @Entity()
 export class Comment {
@@ -14,11 +20,15 @@ export class Comment {
   @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
   user: User;
 
-  @ManyToOne(() => TierList, (tierList) => tierList.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => TierList, (tierList) => tierList.comments, {
+    onDelete: 'CASCADE',
+  })
   tierList: TierList;
 
-  @ManyToOne(() => Rating, (rating) => rating.comments, { onDelete: 'CASCADE' })
-  rating: Rating;
+  @ManyToOne(() => CommentVote, (commentVote) => commentVote.comment, {
+    onDelete: 'CASCADE',
+  })
+  commentVote: CommentVote;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;
@@ -28,5 +38,4 @@ export class Comment {
 
   @Column({ default: 0 })
   likeCount: number;
-
 }

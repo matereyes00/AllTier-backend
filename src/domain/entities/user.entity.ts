@@ -1,4 +1,3 @@
-// user.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { TierList } from './tier.list.entity';
 import { Rating } from './rating.entity';
@@ -16,6 +15,9 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ unique: true })
+  email: string;
+
   // A user can have many tier lists
   @OneToMany(() => TierList, (tierList) => tierList.user)
   tierLists: TierList[];
@@ -29,8 +31,8 @@ export class User {
   comments: Comment[];
 
   @Column({ default: 0 })
-  tokenVersion: number; // 👈 used for invalidating old tokens
+  tokenVersion: number;
 
   @OneToMany(() => Like, (like) => like.user)
-  likes: Like[]; 
+  likes: Like[];
 }

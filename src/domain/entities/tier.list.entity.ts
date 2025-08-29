@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -59,7 +60,5 @@ export class TierList {
   updatedAt: string;
 
   @OneToMany(() => Like, (like) => like.tierList)
-  likes: Like[]; 
-
-
+  likes: Like[];
 }

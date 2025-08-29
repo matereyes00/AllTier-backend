@@ -2,29 +2,30 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
+  Column,
   ManyToOne,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
-import { Item } from './item.entity';
 import { User } from './user.entity';
 import { Comment } from './comment.entity';
-import { Feedback } from './feedback.entity';
+import { Rating } from './rating.entity';
+import { RatingVoteEnum } from '../enum/rating.vote.enum';
 
 @Entity()
-export class Rating {
+export class Feedback {
   @PrimaryGeneratedColumn('uuid')
-  ratingId: string;
+  feedbackVoteId: string;
 
-  @ManyToOne(() => Item, (item) => item.ratings, { onDelete: 'CASCADE' })
-  item: Item;
+  @Column({ type: 'enum', enum: RatingVoteEnum })
+  vote: number;
 
   @ManyToOne(() => User, (user) => user.ratings, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => Feedback, (feedback) => feedback.rating)
-  feedback: Feedback[];
+  @OneToOne(() => Rating, (rating) => rating.feedback)
+  rating: Rating[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;

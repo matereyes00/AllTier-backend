@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { TierList } from './tier.list.entity';
+import { Category } from './category.entity';
 import { Rating } from './rating.entity';
 
 @Entity()
@@ -22,6 +23,10 @@ export class Item {
     onDelete: 'CASCADE',
   })
   tierList: TierList;
+
+  // Many item can have many ratings
+  @ManyToOne(() => Category, (category) => category.items)
+  category: Category;
 
   // One item can have many ratings
   @OneToMany(() => Rating, (rating) => rating.item)
