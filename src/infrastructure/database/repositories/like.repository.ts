@@ -1,21 +1,20 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Like } from "src/domain/entities/like.entity";
-import { BaseRepository } from "./base.repository";
-import { DataSource, Repository } from "typeorm";
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TierListLike } from 'src/domain/entities/like.entity';
+import { BaseRepository } from './base.repository';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
-export class LikeRepository extends BaseRepository<Like>{
+export class LikeRepository extends BaseRepository<TierListLike> {
   constructor(
     private dataSource: DataSource,
-    @InjectRepository(Like)
-    private readonly likesRepository: Repository<Like>,
+    @InjectRepository(TierListLike)
+    private readonly likesRepository: Repository<TierListLike>,
   ) {
-    super(Like, dataSource)
+    super(TierListLike, dataSource);
   }
 
   // async findAll() {
   //     return super.findAll({ user: true, like: true, items: true, comments: true })
   // }
-
 }

@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthModule } from './auth.module';
-import { Like } from 'typeorm';
 import { LikeRepository } from '../database/repositories/like.repository';
+import { TierListLike } from 'src/domain/entities/like.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Like])],
+  imports: [TypeOrmModule.forFeature([TierListLike])],
   providers: [LikeRepository],
   exports: [LikeRepository],
 })

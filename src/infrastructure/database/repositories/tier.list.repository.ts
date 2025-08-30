@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, QueryFailedError, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { TierList } from '../../../domain/entities/tier.list.entity';
 import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
 import { User } from '../../../domain/entities/user.entity';
 import { Item } from 'src/domain/entities/item.entity';
 import { BaseRepository } from './base.repository';
-import { Like } from 'src/domain/entities/like.entity';
+import { TierListLike } from 'src/domain/entities/like.entity';
 
 @Injectable()
 export class TierListRepository extends BaseRepository<TierList> {
@@ -20,13 +24,16 @@ export class TierListRepository extends BaseRepository<TierList> {
     private readonly tierListRepository: Repository<TierList>,
     @InjectRepository(Item)
     private readonly itemRepository: Repository<Item>,
-    @InjectRepository(Like)
-    private readonly likesRepository: Repository<Like>,
+    @InjectRepository(TierListLike)
+    private readonly likesRepository: Repository<TierListLike>,
   ) {
-    super(TierList, dataSource)
+    super(TierList, dataSource);
   }
 
-  async create(createTierListDto: CreateTierListDto, user: User): Promise<TierList> {
+  async create(
+    createTierListDto: CreateTierListDto,
+    user: User,
+  ): Promise<TierList> {
     const tierList = this.tierListRepository.create({
       tierListName: createTierListDto.tierListName,
       tierListType: createTierListDto.tierListType,
@@ -59,14 +66,18 @@ export class TierListRepository extends BaseRepository<TierList> {
   async incrementLikes(userId: string, tierListId: string): Promise<TierList> {
     // 1️⃣ Ensure the user exists
     const user = await this.usersRepository.findOne({ where: { userId } });
-    if (!user) {throw new NotFoundException('User not found')}
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
     // 2️⃣ Ensure the tier list exists
     const tierList = await this.tierListRepository.findOne({
       where: { tierListId },
       relations: ['likes'], // load likes relation to check existing likes if needed
     });
-    if (!tierList) {throw new NotFoundException('Tier list not found')}
+    if (!tierList) {
+      throw new NotFoundException('Tier list not found');
+    }
 
     // 3️⃣ Check if user already liked the tier list
     const existingLike = await this.likesRepository.findOne({
@@ -76,16 +87,16 @@ export class TierListRepository extends BaseRepository<TierList> {
       },
     });
 
-    if (existingLike) { throw new ConflictException("You can't like the same list twice");}
+    if (existingLike) {
+      throw new ConflictException("You can't like the same list twice");
+    }
 
     // 4️⃣ Increment likeCount
-    await this.tierListRepository.increment(
-      { tierListId }, 'likeCount', 1,
-    );
+    await this.tierListRepository.increment({ tierListId }, 'likeCount', 1);
 
     // 5️⃣ Save the Like entity
     await this.likesRepository.save(
-      this.likesRepository.create({ user,tierList,})
+      this.likesRepository.create({ user, tierList }),
     );
 
     // 6️⃣ Return the updated tier list safely
@@ -94,12 +105,11 @@ export class TierListRepository extends BaseRepository<TierList> {
       relations: ['user', 'items', 'likes', 'comments'],
     });
 
-    if (!updatedTierList) {throw new NotFoundException('Tier list not found after update');}
+    if (!updatedTierList) {
+      throw new NotFoundException('Tier list not found after update');
+    }
 
     // 6️⃣ Return updated tier list
     return updatedTierList;
   }
-
-
-
 }
