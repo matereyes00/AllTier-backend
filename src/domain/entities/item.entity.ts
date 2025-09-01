@@ -28,7 +28,7 @@ export class Item {
   // category: Category;
 
   @Column({ type: 'varchar', nullable: true })
-  thumbnailUrl: string;
+  itemPhotoUrl: string;
 
   // One item can have many ratings
   @OneToMany(() => Rating, (rating) => rating.item)
