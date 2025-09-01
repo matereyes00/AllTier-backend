@@ -44,7 +44,7 @@ export class TierList {
   })
   comments: Comment[];
 
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   itemCount: number;
 
   @Column({ default: 0 })

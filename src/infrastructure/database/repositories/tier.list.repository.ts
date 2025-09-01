@@ -49,6 +49,7 @@ export class TierListRepository extends BaseRepository<TierList> {
   ): Promise<TierList> {
     // A transaction is still best practice for creating a parent and its children
     return this.dataSource.transaction(async (transactionalEntityManager) => {
+      const itemCount = createTierListDto.items?.length || 0;
       // 1️⃣ Create the TierList entity and directly assign the categories array
       const tierList = transactionalEntityManager.create(TierList, {
         tierListName: createTierListDto.tierListName,
@@ -56,6 +57,7 @@ export class TierListRepository extends BaseRepository<TierList> {
         thumbnailUrl: createTierListDto.thumbnailUrl,
         user,
         categories: createTierListDto.categories || [], // Directly assign the string array
+        itemCount: itemCount, // ✨ Set the initial item count
       });
       await transactionalEntityManager.save(tierList);
 
