@@ -47,6 +47,21 @@ You'll need the following software installed on your machine:
     ```env
     # Example
     JWT_SECRET=yourSuperSecretKeyGoesHere
+    # Database Connection
+    DB_HOST=yourHost
+    DB_PORT=yourPort
+    DB_USERNAME=yourUsername
+    DB_PASSWORD=yourPassword
+    DB_DATABASE=yourDatabase
+
+    ACCESS_TOKEN_SECRET_KEY=yourAccessToken
+    ACCESS_TOKEN_EXPIRE_IN=1m
+    REFRESH_JWT_SECRET=yourRefreshToken
+    REFRESH_JWT_EXPIRE_IN=1h
+    ```
+    You can generate ```ACCESS_TOKEN_SECRET_KEY``` and ```REFRESH_JWT_SECRET``` via:
+    ```sh
+    opsnssl rand -base64 32
     ```
 
 ---
