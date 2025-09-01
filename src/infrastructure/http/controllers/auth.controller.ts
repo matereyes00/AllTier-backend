@@ -25,7 +25,6 @@ import {
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
 
-
 interface TokensRequest extends Request {
     user: {
         user: User;
