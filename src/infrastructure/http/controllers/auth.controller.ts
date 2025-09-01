@@ -29,7 +29,6 @@ import { User } from 'src/domain/entities/user.entity';
 interface TokensRequest extends Request {
     user: {
         user: User;
-        accessToken: string;
         refreshToken: string;
     };
 }
@@ -82,8 +81,9 @@ export class AuthController {
   @ApiOperation({ summary: 'API endpoint for the user to regenerate their access and refresh tokens' })
   @Post('regenerateTokens')
   refreshTokens(@Request() request: TokensRequest) {
-      const { accessToken, refreshToken } = request.user; // Now it contains both the user and tokens
-      return { accessToken, refreshToken };
+      const userId = request.user.user.userId;
+      const refreshToken = request.user.refreshToken;
+      return this.authService.validateRefreshToken(userId, refreshToken);
   }
 
 
