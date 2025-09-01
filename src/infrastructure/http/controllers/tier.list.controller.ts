@@ -127,11 +127,17 @@ export class TierListController {
 
   @UseInterceptors(TierListInterceptor)
   @Patch('like/:id')
+  @ApiOperation({
+    summary: 'Like a tier list. Any user can like any tier list created by other users. Users can also like their own tier lists. A user cannot like a tier list twice',
+  })
   likeTierList(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.likeTierList(id, user.userId)
   }
 
   @Patch(':id/thumbnail')
+  @ApiOperation({
+    summary: 'Upload a thumbnail for the tier list',
+  })
   @UseInterceptors(
     FileInterceptor('file', { // 'file' is the field name for the uploaded file
       storage: diskStorage({

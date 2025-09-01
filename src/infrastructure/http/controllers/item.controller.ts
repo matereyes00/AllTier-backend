@@ -78,7 +78,7 @@ export class ItemsController {
     return this.itemsService.create(tierListId, createItemDto, photo);
   }
 
-  @Patch('edit-item/:tierListId/:itemId')
+  @Patch('edit-item/:itemId')
   @ApiOperation({ summary: 'Update an existing item' })
   @ApiParam({ name: 'tierListId', type: 'string', format: 'uuid', description: 'The ID of the parent tier list' })
   @ApiParam({ name: 'itemId', type: 'string', format: 'uuid', description: 'The ID of the item to update' })
