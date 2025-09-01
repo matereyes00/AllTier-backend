@@ -6,6 +6,8 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Res,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from '../../../application/services/auth.service';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
@@ -22,6 +24,16 @@ import {
 } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
+
+
+interface TokensRequest extends Request {
+    user: {
+        user: User;
+        accessToken: string;
+        refreshToken: string;
+    };
+}
+
 
 @Controller('auth')
 export class AuthController {
@@ -65,4 +77,14 @@ export class AuthController {
     await this.authService.logout(user.userId);
     return { message: 'Logged out successfully' };
   }
+
+  @UseGuards(AuthGuard('jwt-refresh'))
+  @ApiOperation({ summary: 'API endpoint for the user to regenerate their access and refresh tokens' })
+  @Post('regenerateTokens')
+  refreshTokens(@Request() request: TokensRequest) {
+      const { accessToken, refreshToken } = request.user; // Now it contains both the user and tokens
+      return { accessToken, refreshToken };
+  }
+
+
 }

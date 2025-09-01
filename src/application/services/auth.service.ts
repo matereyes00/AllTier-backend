@@ -48,7 +48,7 @@ export class AuthService {
     return user;
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string }> {
+  async login(loginUserDto: LoginUserDto): Promise<{ accessToken: string, refreshToken: string }> {
     const { username, password } = loginUserDto;
     const user = await this.userRepository.findByUsername(username);
 
@@ -62,14 +62,54 @@ export class AuthService {
       tokenVersion: user.tokenVersion,
     };
 
-    const accessToken = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || 'defaultSecret',
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
-    });
-
-    return { accessToken };
+    const { accessToken, refreshToken } = await this.generateTokens(user);
+    delete (user as any).password;
+    return { accessToken, refreshToken };
   }
+
   async logout(userId: string): Promise<void> {
     await this.userRepository.incrementLoginCount(userId);
   }
+
+  async generateTokens(user: User) {
+    const payload = {id: user.userId, email: user.email, tokenVersion: user.tokenVersion}
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.ACCESS_TOKEN_SECRET_KEY || 'defaultSecret',
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN || '15m',
+    });
+
+    const refreshToken = this.jwtService.sign(payload, {
+          secret: process.env.REFRESH_JWT_SECRET,
+          expiresIn: process.env.REFRESH_JWT_EXPIRE_IN,
+      })
+    return { accessToken, refreshToken };
+  }
+
+  async validateRefreshToken(userId: string, refreshToken: string) {
+      try {
+          // Verify the refresh token with JwtService
+          const decoded = this.jwtService.verify(refreshToken, {
+              secret: process.env.REFRESH_JWT_SECRET,
+          });
+          // Check if the decoded token corresponds to the correct user
+          if (decoded.id !== userId) {
+              throw new UnauthorizedException('Invalid refresh token.');
+          }
+          const user = await this.userRepository.findById(userId);
+          if (!user) {
+              throw new UnauthorizedException('User not found.');
+          }
+          // If the token is valid, generate new access and refresh tokens
+          const { accessToken, refreshToken: newRefreshToken } =
+              await this.generateTokens(user);
+          return { user, accessToken, newRefreshToken };
+      } catch (err) {
+          console.error('Error validating refresh token:', err);
+          throw new UnauthorizedException(
+              'Invalid refresh token or expired.',
+          );
+      }
+  }
+
+
 }
