@@ -25,7 +25,7 @@ export class UpdateTierListDto {
   @ApiProperty({
     type: String,
     description:
-      'The tier list thumbnail to be updated. The tier list thumbnail can only be images',
+      'The tier list thumbnail to be updated. The tier list thumbnail can only be image paths',
     example: 'tournament',
   })
   thumbnailUrl: string;

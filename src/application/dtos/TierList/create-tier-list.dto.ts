@@ -22,6 +22,14 @@ export class CreateTierListDto {
   })
   tierListType: string;
 
+  @ApiProperty({
+    type: String,
+    description:
+      'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
+    example: 'tournament',
+  })
+  thumbnailUrl: string;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateItemDto)
