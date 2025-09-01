@@ -10,6 +10,7 @@ import { RatingModule } from './rating.module';
 import { ItemModule } from './item.module';
 import { CommentsModule } from './comments.module';
 import { UsersModule } from './users.module';
+import { TierListLikesModule } from './likes.module';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { UsersModule } from './users.module';
     TypeOrmModule.forRoot(dataSourceOptions),
     AuthModule, UsersModule,
     TierListModule, ItemModule,
-    RatingModule, CommentsModule
+    RatingModule, CommentsModule, TierListLikesModule
   ],
   controllers: [AppController],
   providers: [AppService],

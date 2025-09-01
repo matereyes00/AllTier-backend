@@ -5,7 +5,7 @@ import { BaseRepository } from './base.repository';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
-export class LikeRepository extends BaseRepository<TierListLike> {
+export class TierListLikeRepository extends BaseRepository<TierListLike> {
   constructor(
     private dataSource: DataSource,
     @InjectRepository(TierListLike)

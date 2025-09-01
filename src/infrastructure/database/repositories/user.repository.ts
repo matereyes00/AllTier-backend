@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { User } from '../../../domain/entities/user.entity';
 import { CreateUserDto } from '../../../application/dtos/create-user.dto';
 import { UpdateUserDto } from 'src/application/dtos/update-profile.dto';
+import { BaseRepository } from './base.repository';
 
 @Injectable()
-export class UserRepository {
+export class UserRepository extends BaseRepository<User>{
   constructor(
+    private dataSource :DataSource,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+    super(User, dataSource)
+  }
 
   async findByUsername(username: string): Promise<User | null> {
     return this.userRepository.findOne({ where: { username } });

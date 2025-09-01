@@ -10,13 +10,11 @@ import { CreateTierListDto } from '../dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../dtos/TierList/update-tier-list.dto';
 import { User } from '../../domain/entities/user.entity';
 import { TierList } from '../../domain/entities/tier.list.entity';
-// import { LikeRepository } from 'src/infrastructure/database/repositories/like.repository';
 
 @Injectable()
 export class TierListService {
   constructor(
     private readonly tierListRepository: TierListRepository,
-    // private readonly likesRepository: LikeRepository
   ) {}
 
   async create(

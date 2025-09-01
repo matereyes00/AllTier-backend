@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TierList } from '../../domain/entities/tier.list.entity';
 import { TierListController } from '../http/controllers/tier.list.controller';
@@ -8,15 +8,18 @@ import { AuthModule } from './auth.module';
 import { Item } from 'src/domain/entities/item.entity';
 import { User } from 'src/domain/entities/user.entity';
 import { TierListLike } from 'src/domain/entities/like.entity';
-import { LikesModule } from './likes.module';
+import { TierListLikesModule } from './likes.module';
+import { ItemModule } from './item.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TierList, Item, User, TierListLike]),
     AuthModule,
-    LikesModule,
+    TierListLikesModule,
+    forwardRef(() => ItemModule)
   ],
   controllers: [TierListController],
   providers: [TierListService, TierListRepository],
+  exports: [TierListRepository]
 })
 export class TierListModule {}

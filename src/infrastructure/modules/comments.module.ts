@@ -9,7 +9,7 @@ import { CommentsController } from '../http/controllers/comments.controller';
 import { Comment } from 'src/domain/entities/comment.entity';
 import { TierListRepository } from '../database/repositories/tier.list.repository';
 import { TierListLike } from 'src/domain/entities/like.entity';
-import { LikeRepository } from '../database/repositories/like.repository';
+import { TierListLikeRepository } from '../database/repositories/like.repository';
 import { UserRepository } from '../database/repositories/user.repository';
 import { User } from 'src/domain/entities/user.entity';
 
@@ -23,7 +23,7 @@ import { User } from 'src/domain/entities/user.entity';
     CommentsService,
     CommentsRepository,
     TierListRepository,
-    LikeRepository,
+    TierListLikeRepository,
     UserRepository,
   ],
   exports: [CommentsService],
