@@ -8,6 +8,8 @@ import { UpdateItemDto } from "../../../application/dtos/Items/update-item.dto";
 
 @Injectable()
 export class ItemRepository extends BaseRepository<Item> {
+  create: any;
+  save: any;
   constructor(
     private dataSource: DataSource,
     @InjectRepository(TierList)
