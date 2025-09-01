@@ -65,6 +65,11 @@ export class TierList {
   @OneToMany(() => TierListLike, (like) => like.tierList)
   likes: TierListLike[];
 
-  @Column()
+  @Column({
+    type: 'text',     // Defines the type of elements in the array
+    array: true,      // Specifies that this is an array column
+    nullable: true,
+    default: [], // It's good practice to provide a default value
+  })
   categories: string[]
 }
