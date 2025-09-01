@@ -9,4 +9,12 @@ export class UpdateItemDto {
     description: 'This is the name of the item to be updated.',
   })
   itemName: string;
+
+  @IsString()
+  @ApiProperty({
+    description: 'The category of the item to edit in the Tier List.',
+    type: String,
+    example: 'Category 2',
+  })
+  category: string;
 }

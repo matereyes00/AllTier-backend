@@ -41,4 +41,14 @@ export class CreateTierListDto {
       '[{"itemName":"Item Name 1"}, {"itemName": "Item Name 2"}, {"itemName": "Item Name 3"}]',
   })
   items?: CreateItemDto[];
+
+  @IsArray()
+  @IsOptional()
+  @ApiProperty({
+    type: [String],
+    description: 'This is the list of items a tier list has upon creation.',
+    example:
+      '[{"category":"Category 1"}, {"category": "Category 2"}, {"category": "Category 3"}]',
+  })
+  categories?: string[];
 }
