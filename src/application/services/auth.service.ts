@@ -100,9 +100,9 @@ export class AuthService {
               throw new UnauthorizedException('User not found.');
           }
           // If the token is valid, generate new access and refresh tokens
-          const { accessToken, refreshToken: newRefreshToken } =
+          const { accessToken, refreshToken: refreshToken_ } =
               await this.generateTokens(user);
-          return { user, accessToken, newRefreshToken };
+          return { user, accessToken, refreshToken_ };
       } catch (err) {
           console.error('Error validating refresh token:', err);
           throw new UnauthorizedException(
