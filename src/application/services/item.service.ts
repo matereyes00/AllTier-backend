@@ -1,9 +1,9 @@
-import { ItemRepository } from 'src/infrastructure/database/repositories/item.repository';
+import { ItemRepository } from '../../infrastructure/database/repositories/item.repository';
 import { UpdateItemDto } from '../dtos/Items/update-item.dto';
-import { Item } from 'src/domain/entities/item.entity';
+import { Item } from '../../domain/entities/item.entity';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { TierList } from 'src/domain/entities/tier.list.entity';
-import { TierListRepository } from 'src/infrastructure/database/repositories/tier.list.repository';
+import { TierList } from '../../domain/entities/tier.list.entity';
+import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
 
 @Injectable()
 export class ItemsService {

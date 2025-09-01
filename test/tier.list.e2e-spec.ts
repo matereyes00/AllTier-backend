@@ -15,14 +15,15 @@ describe('TierListController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        // Load the .env.test file
         ConfigModule.forRoot({
-            envFilePath: '.env.test',
-            isGlobal: true,
+          envFilePath: '.env.test',
+          isGlobal: true,
         }),
-        AppModule
-    ],
+        AppModule, // Your main AppModule
+      ],
     }).compile();
-
+    
     app = moduleFixture.createNestApplication();
     await app.init();
 

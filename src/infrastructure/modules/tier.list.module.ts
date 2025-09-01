@@ -5,9 +5,9 @@ import { TierListController } from '../http/controllers/tier.list.controller';
 import { TierListService } from '../../application/services/tier.list.service';
 import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
 import { AuthModule } from './auth.module';
-import { Item } from 'src/domain/entities/item.entity';
-import { User } from 'src/domain/entities/user.entity';
-import { TierListLike } from 'src/domain/entities/like.entity';
+import { Item } from '../../domain/entities/item.entity';
+import { User } from '../../domain/entities/user.entity';
+import { TierListLike } from '../../domain/entities/like.entity';
 import { TierListLikesModule } from './likes.module';
 import { ItemModule } from './item.module';
 

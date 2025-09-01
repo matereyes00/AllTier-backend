@@ -26,7 +26,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { CurrentUser } from '../decorators/current.user.decorator';
-import { User } from 'src/domain/entities/user.entity';
+import { User } from '../../../domain/entities/user.entity';
 import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { extname } from 'path';

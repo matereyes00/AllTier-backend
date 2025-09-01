@@ -4,10 +4,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
-import { CommentsRepository } from 'src/infrastructure/database/repositories/comments.repository';
+import { CommentsRepository } from '../../infrastructure/database/repositories/comments.repository';
 import { CreateCommentDto } from '../dtos/Comments/create-comment.dto';
-import { User } from 'src/domain/entities/user.entity';
-import { Comment } from 'src/domain/entities/comment.entity';
+import { User } from '../../domain/entities/user.entity';
+import { Comment } from '../../domain/entities/comment.entity';
 import {
   BadRequestException,
   ForbiddenException,
@@ -15,7 +15,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { UpdateCommentDto } from '../dtos/Comments/update-comment.dto';
-import { TierListRepository } from 'src/infrastructure/database/repositories/tier.list.repository';
+import { TierListRepository } from '../../infrastructure/database/repositories/tier.list.repository';
 
 @Injectable()
 export class CommentsService {

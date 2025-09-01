@@ -7,10 +7,10 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CreateCommentDto } from 'src/application/dtos/Comments/create-comment.dto';
-import { CommentsService } from 'src/application/services/comments.service';
+import { CreateCommentDto } from '../../../application/dtos/Comments/create-comment.dto';
+import { CommentsService } from '../../../application/services/comments.service';
 import { CurrentUser } from '../decorators/current.user.decorator';
-import { User } from 'src/domain/entities/user.entity';
+import { User } from '../../../domain/entities/user.entity';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -21,7 +21,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
-import { UpdateCommentDto } from 'src/application/dtos/Comments/update-comment.dto';
+import { UpdateCommentDto } from '../../../application/dtos/Comments/update-comment.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))

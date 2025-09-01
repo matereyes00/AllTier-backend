@@ -11,11 +11,11 @@ import {
   Delete,
   Req,
 } from '@nestjs/common';
-import { UsersService } from 'src/application/services/users.service';
-import { User } from 'src/domain/entities/user.entity';
+import { UsersService } from '../../../application/services/users.service';
+import { User } from '../../../domain/entities/user.entity';
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { AuthGuard } from '@nestjs/passport';
-import { UserRepository } from 'src/infrastructure/database/repositories/user.repository';
+import { UserRepository } from '../../database/repositories/user.repository';
 import {
   ApiBearerAuth,
   ApiOperation,

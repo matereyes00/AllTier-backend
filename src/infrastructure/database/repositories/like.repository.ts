@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TierListLike } from 'src/domain/entities/like.entity';
+import { TierListLike } from '../../../domain/entities/like.entity';
 import { BaseRepository } from './base.repository';
 import { DataSource, Repository } from 'typeorm';
 

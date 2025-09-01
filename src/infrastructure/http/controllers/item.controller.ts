@@ -9,10 +9,10 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { ItemsService } from 'src/application/services/item.service';
-import { User } from 'src/domain/entities/user.entity';
+import { ItemsService } from '../../../application/services/item.service';
+import { User } from '../../../domain/entities/user.entity';
 import { CurrentUser } from '../decorators/current.user.decorator';
-import { UpdateItemDto } from 'src/application/dtos/Items/update-item.dto';
+import { UpdateItemDto } from '../../../application/dtos/Items/update-item.dto';
 import { AuthGuard } from '@nestjs/passport';
 
 @UseGuards(AuthGuard('jwt'))

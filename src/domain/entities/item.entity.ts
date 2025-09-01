@@ -27,6 +27,9 @@ export class Item {
   // @ManyToOne(() => Category, (category) => category.items)
   // category: Category;
 
+  @Column({ type: 'varchar', nullable: true })
+  thumbnailUrl: string;
+
   // One item can have many ratings
   @OneToMany(() => Rating, (rating) => rating.item)
   ratings: Rating[];

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateCommentDto } from 'src/application/dtos/Comments/create-comment.dto';
-import { UpdateCommentDto } from 'src/application/dtos/Comments/update-comment.dto';
-import { Comment } from 'src/domain/entities/comment.entity';
-import { User } from 'src/domain/entities/user.entity';
+import { CreateCommentDto } from '../../../application/dtos/Comments/create-comment.dto';
+import { UpdateCommentDto } from '../../../application/dtos/Comments/update-comment.dto';
+import { Comment } from '../../../domain/entities/comment.entity';
+import { User } from '../../../domain/entities/user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { BaseRepository } from './base.repository';
-import { TierList } from 'src/domain/entities/tier.list.entity';
+import { TierList } from '../../../domain/entities/tier.list.entity';
 
 @Injectable()
 export class CommentsRepository extends BaseRepository<Comment> {

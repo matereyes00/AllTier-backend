@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Item } from "src/domain/entities/item.entity";
-import { TierList } from "src/domain/entities/tier.list.entity";
+import { Item } from "../../../domain/entities/item.entity";
+import { TierList } from "../../../domain/entities/tier.list.entity";
 import { DataSource, Repository } from "typeorm";
 import { BaseRepository } from "./base.repository";
-import { UpdateItemDto } from "src/application/dtos/Items/update-item.dto";
+import { UpdateItemDto } from "../../../application/dtos/Items/update-item.dto";
 
 @Injectable()
 export class ItemRepository extends BaseRepository<Item> {

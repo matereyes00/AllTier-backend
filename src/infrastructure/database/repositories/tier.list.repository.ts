@@ -10,9 +10,9 @@ import { TierList } from '../../../domain/entities/tier.list.entity';
 import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
 import { User } from '../../../domain/entities/user.entity';
-import { Item } from 'src/domain/entities/item.entity';
+import { Item } from '../../../domain/entities/item.entity';
 import { BaseRepository } from './base.repository';
-import { TierListLike } from 'src/domain/entities/like.entity';
+import { TierListLike } from '../../../domain/entities/like.entity';
 
 @Injectable()
 export class TierListRepository extends BaseRepository<TierList> {
