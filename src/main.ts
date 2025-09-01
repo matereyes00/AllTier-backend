@@ -10,6 +10,11 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // app.useGlobalInterceptors(new TierListInterceptor());
+  app.enableCors({
+    origin: 'http://localhost:4000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
 
    app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',
