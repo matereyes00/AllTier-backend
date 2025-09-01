@@ -11,14 +11,12 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { LoginUserDto } from '../dtos/Auth/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../domain/entities/user.entity';
-import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<User> {

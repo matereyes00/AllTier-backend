@@ -21,6 +21,6 @@ export class Category {
   })
   tierList: TierList;
 
-  @OneToMany(() => Item, (items) => items.category)
-  items: Item[];
+  // @OneToMany(() => Item, (items) => items.category)
+  // items: Item[];
 }

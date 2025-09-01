@@ -25,7 +25,6 @@ export class TierList {
   @Column({ type: 'enum', enum: TierListType })
   tierListType: string;
 
-  // ✅ ADD THIS COLUMN
   @Column({ type: 'varchar', nullable: true })
   thumbnailUrl: string;
 
@@ -65,4 +64,7 @@ export class TierList {
 
   @OneToMany(() => TierListLike, (like) => like.tierList)
   likes: TierListLike[];
+
+  @Column()
+  categories: string[]
 }
