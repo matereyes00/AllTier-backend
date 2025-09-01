@@ -8,6 +8,8 @@ import {
   Patch,
   Delete,
   UseInterceptors,
+  ParseUUIDPipe,
+  UploadedFile,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
@@ -17,6 +19,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
+  ApiConsumes,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiNotFoundResponse,
@@ -25,6 +28,9 @@ import {
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from 'src/domain/entities/user.entity';
 import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
 
 @ApiBearerAuth()
 @Controller('tierlists')
@@ -124,5 +130,42 @@ export class TierListController {
   likeTierList(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tierListService.likeTierList(id, user.userId)
   }
+
+  @Patch(':id/thumbnail')
+  @UseInterceptors(
+    FileInterceptor('file', { // 'file' is the field name for the uploaded file
+      storage: diskStorage({
+        destination: './uploads', // The folder where files will be saved
+        filename: (req, file, cb) => {
+          // Generate a unique filename
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${uniqueSuffix}${ext}`;
+          cb(null, filename);
+        },
+      }),
+    }),
+  )
+  @ApiConsumes('multipart/form-data') // For Swagger documentation
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadThumbnail(
+    @Param('id', ParseUUIDPipe) id: string,
+    @UploadedFile() file: Express.Multer.File, // Access the uploaded file
+    updateTierListDto: UpdateTierListDto
+  ) {
+    // The service will handle linking the file to the tier list
+    return this.tierListService.addThumbnail(id, file.path, updateTierListDto);
+  }
+
 
 }

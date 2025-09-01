@@ -3,14 +3,14 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
+  Column,
+  OneToMany,
 } from 'typeorm';
 import { Item } from './item.entity';
 import { User } from './user.entity';
-import { Comment } from './comment.entity';
-import { Feedback } from './feedback.entity';
+import { FeedbackVote } from './feedback.entity';
 
 @Entity()
 export class Rating {
@@ -23,8 +23,12 @@ export class Rating {
   @ManyToOne(() => User, (user) => user.ratings, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToMany(() => Feedback, (feedback) => feedback.rating)
-  feedback: Feedback[];
+  @Column()
+  feedback: string;
+  
+  // A rating can have many feedback votes.
+  @OneToMany(() => FeedbackVote, (vote) => vote.rating)
+  feedbackVotes: FeedbackVote[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;

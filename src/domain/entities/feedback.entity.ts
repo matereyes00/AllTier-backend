@@ -14,7 +14,7 @@ import { Rating } from './rating.entity';
 import { RatingVoteEnum } from '../enum/rating.vote.enum';
 
 @Entity()
-export class Feedback {
+export class FeedbackVote {
   @PrimaryGeneratedColumn('uuid')
   feedbackVoteId: string;
 
@@ -24,8 +24,8 @@ export class Feedback {
   @ManyToOne(() => User, (user) => user.ratings, { onDelete: 'CASCADE' })
   user: User;
 
-  @OneToOne(() => Rating, (rating) => rating.feedback)
-  rating: Rating[];
+  @ManyToOne(() => Rating, (rating) => rating.feedbackVotes, { onDelete: 'CASCADE' })
+  rating: Rating; // ✅ Type should be a single Rating, not an array.
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;

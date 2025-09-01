@@ -108,4 +108,25 @@ export class TierListService {
     }
     return this.tierListRepository.incrementLikes(userId, tierList.tierListId);
   }
+
+  async addThumbnail(tierListId: string, filePath: string, updateTierListDto: UpdateTierListDto) {
+    // Find the tier list by its ID
+    const tierList = await this.tierListRepository.findById(tierListId );
+    if (!tierList) {
+      throw new NotFoundException(`TierList with ID "${tierListId}" not found`);
+    }
+
+    // You might want to format the path into a full URL
+    // This depends on how you serve your static files
+    // const thumbnailUrl = `http://localhost:3000/${filePath}`;
+
+    // Update the thumbnailUrl property
+    tierList.thumbnailUrl = updateTierListDto.thumbnailUrl;
+    
+
+    // Save the updated entity to the database
+    return this.tierListRepository.update(tierList, updateTierListDto);
+  }
+
+
 }

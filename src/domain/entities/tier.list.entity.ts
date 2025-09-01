@@ -25,6 +25,10 @@ export class TierList {
   @Column({ type: 'enum', enum: TierListType })
   tierListType: string;
 
+  // ✅ ADD THIS COLUMN
+  @Column({ type: 'varchar', nullable: true })
+  thumbnailUrl: string;
+
   // creator
   @ManyToOne(() => User, (user) => user.tierLists)
   user: User;
