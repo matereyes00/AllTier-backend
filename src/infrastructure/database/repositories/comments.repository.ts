@@ -39,6 +39,10 @@ export class CommentsRepository extends BaseRepository<Comment> {
     return this.commentsRepository.save(comment);
   }
 
+  async remove(comment: Comment): Promise<void> {
+    await this.commentsRepository.remove(comment);
+  }
+
   async findById(id: string): Promise<Comment | null> {
     return super.findById('commentId', id, {
       user: true,
