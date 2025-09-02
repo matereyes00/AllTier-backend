@@ -21,9 +21,9 @@ import { CurrentUser } from '../decorators/current.user.decorator';
 import { UpdateItemDto } from '../../../application/dtos/Items/update-item.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateItemDto } from 'src/application/dtos/Items/create-item.dto';
+import { CreateItemDto } from '../../../application/dtos/Items/create-item.dto';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
-import { Item } from 'src/domain/entities/item.entity';
+import { Item } from '../../../domain/entities/item.entity';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
