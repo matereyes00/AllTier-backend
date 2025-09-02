@@ -3,6 +3,7 @@ import { AuthController } from "./auth.controller";
 import { AuthService } from "../../../application/services/auth.service";
 import { randomUUID } from "crypto";
 import { User } from "../../../domain/entities/user.entity";
+import { BadRequestException, ConflictException, UnauthorizedException } from "@nestjs/common";
 
 describe('AuthController', () => {
     let controller: AuthController;
@@ -23,7 +24,11 @@ describe('AuthController', () => {
                 refreshToken: `${randomUUID()}`
             }
         }),
-        logout: jest.fn()
+        logout: jest.fn(),
+        validateRefreshToken: jest.fn((userId, refreshToken) => ({
+            accessToken: `${randomUUID()}`,
+            refreshToken: `${randomUUID()}`,
+        }))
     }
     
     beforeEach( async () => {
@@ -35,6 +40,10 @@ describe('AuthController', () => {
         controller = module.get<AuthController> (AuthController)
         service = module.get<AuthService>(AuthService);
     })
+
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear mocks between tests
+    });
 
     const mockUserSignUp = {
         email: "testuser@gmail.com",
@@ -64,14 +73,49 @@ describe('AuthController', () => {
         expect(controller).toBeDefined();
     })
 
-    it('Should create a user', async () => {
-        const result = await controller.signUp(mockUserSignUp);
-        expect(result).toEqual(mockUserSignUpResult)
-    })
+    describe('signUp', () => {
+        it('should create and return a new user', async () => {
+            const result = await controller.signUp(mockUserSignUp);
+            expect(service.signUp).toHaveBeenCalledWith(mockUserSignUp);
+            expect(result.email).toEqual(mockUserSignUp.email);
+            expect(result).toHaveProperty('id');
+        });
 
-    it('Should log a user in the app', async () => {
-        const result = await controller.login(mockUserSignIn);
-        expect(result).toEqual(mockUserSignInResult);
+        it('should throw ConflictException if email already exists', async () => {
+            mockAuthService.signUp.mockImplementationOnce(() => {
+                throw new ConflictException('User with this email already exists');
+            });
+            await expect(controller.signUp(mockUserSignUp))
+                .rejects
+                .toThrow(ConflictException);
+        });
+
+        it('should throw BadRequestException if passwords do not match', async () => {
+            const badSignUpDto = { ...mockUserSignUp, confirmPassword: 'wrong-password' };
+            mockAuthService.signUp.mockImplementationOnce(() => {
+                throw new BadRequestException('Passwords do not match');
+            });
+            await expect(controller.signUp(badSignUpDto))
+                .rejects
+                .toThrow(BadRequestException);
+        });
+    });
+
+    describe('login', () => {
+        it('should log a user in and return tokens', async () => {
+            const result = await controller.login(mockUserSignIn);
+            expect(service.login).toHaveBeenCalledWith(mockUserSignIn);
+            expect(result).toEqual(mockUserSignInResult);
+        });
+
+        it('should throw UnauthorizedException for invalid credentials', async () => {
+            mockAuthService.login.mockImplementationOnce(() => {
+                throw new UnauthorizedException('Invalid credentials');
+            });
+            await expect(controller.login(mockUserSignIn))
+                .rejects
+                .toThrow(UnauthorizedException);
+        });
     });
 
     describe('logout', () => {
@@ -83,5 +127,25 @@ describe('AuthController', () => {
             expect(result).toEqual({message: 'Logged out successfully'})
         })
     })
+
+    describe('refreshTokens', () => {
+        it('should return a new set of tokens', async () => {
+            const userId = randomUUID();
+            const refreshToken = 'old-refresh-token';
+            const mockRequest = {
+                user: {
+                    user: { userId },
+                    refreshToken
+                }
+            };
+
+            const result = await controller.refreshTokens(mockRequest as any);
+            expect(service.validateRefreshToken)
+                .toHaveBeenCalledWith(userId, refreshToken);
+            expect(result).toHaveProperty('accessToken');
+            expect(result).toHaveProperty('refreshToken');
+        });
+    });
+
 
 })
