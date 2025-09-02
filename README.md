@@ -8,12 +8,22 @@ A revamp of TierMaker.
 
 [Write a short paragraph explaining the project in more detail. What was your motivation? What problem does it solve? What makes it interesting?]
 
-### 🛠️ Tech Stack
+### 🛠️ Built with
+* ![Next.js](https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+* ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+* ![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2306B6D4.svg?style=for-the-badge&logo=tailwindcss&logoColor=white)
+* ![Docker](https://img.shields.io/badge/docker-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+* ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+* ![Amplitude](https://img.shields.io/badge/Amplitude-0050FF?style=for-the-badge&logo=amplitude&logoColor=white)
+* ![TypeScript](https://img.shields.io/badge/typescript-%233178C6.svg?style=for-the-badge&logo=typescript&logoColor=white)
+* ![PostgreSQL](https://img.shields.io/badge/postgresql-%234169E1.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+* ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
 
 - **Backend:** NestJS, TypeScript
 - **Authentication:** JWT, Passport.js
 - **Database:** PostgreSQL
 - **Environment:** Docker
+
 
 ---
 
