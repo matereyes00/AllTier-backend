@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   ParseUUIDPipe,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
@@ -29,14 +30,16 @@ import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from '../../../domain/entities/user.entity';
 import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { extname } from 'path';
-import { diskStorage } from 'multer';
+import { CloudinaryService } from '../../../application/services/cloudinary.service';
 
 @ApiBearerAuth()
 @Controller('tierlists')
 @UseGuards(AuthGuard('jwt'))
 export class TierListController {
-  constructor(private readonly tierListService: TierListService) {}
+  constructor(
+    private readonly tierListService: TierListService,
+    private readonly cloudinaryService: CloudinaryService
+  ) {}
 
   @Post('create-tier-list')
   @ApiOperation({
@@ -136,23 +139,11 @@ export class TierListController {
 
   @Patch(':id/thumbnail')
   @ApiOperation({
-    summary: 'Upload a thumbnail for the tier list',
+    summary: 'Upload or update a thumbnail for the tier list',
   })
-  @UseInterceptors(
-    FileInterceptor('file', { // 'file' is the field name for the uploaded file
-      storage: diskStorage({
-        destination: './uploads', // The folder where files will be saved
-        filename: (req, file, cb) => {
-          // Generate a unique filename
-          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-          const ext = extname(file.originalname);
-          const filename = `${uniqueSuffix}${ext}`;
-          cb(null, filename);
-        },
-      }),
-    }),
-  )
-  @ApiConsumes('multipart/form-data') // For Swagger documentation
+  // 3. REMOVE the diskStorage configuration. We will handle the file in memory.
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
@@ -166,11 +157,17 @@ export class TierListController {
   })
   async uploadThumbnail(
     @Param('id', ParseUUIDPipe) id: string,
-    @UploadedFile() file: Express.Multer.File, // Access the uploaded file
-    updateTierListDto: UpdateTierListDto
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: User, // It's good practice to pass the user for authorization
   ) {
-    // The service will handle linking the file to the tier list
-    return this.tierListService.addThumbnail(id, file.path, updateTierListDto);
+    if (!file) {
+      throw new BadRequestException('File is required for thumbnail upload.');
+    }
+    // 4. Upload the image to Cloudinary using our service
+    const uploadResult = await this.cloudinaryService.uploadImage(file);
+    // 5. Call the service to update the tier list with the new thumbnail URL
+    //    We pass the secure_url from the Cloudinary response.
+    return this.tierListService.addThumbnail(id, uploadResult.secure_url, user.userId);
   }
 
 

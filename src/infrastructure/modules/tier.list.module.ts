@@ -10,6 +10,7 @@ import { User } from '../../domain/entities/user.entity';
 import { TierListLike } from '../../domain/entities/like.entity';
 import { TierListLikesModule } from './likes.module';
 import { ItemModule } from './item.module';
+import { CloudinaryService } from 'src/application/services/cloudinary.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ItemModule } from './item.module';
     forwardRef(() => ItemModule)
   ],
   controllers: [TierListController],
-  providers: [TierListService, TierListRepository],
+  providers: [TierListService, TierListRepository, CloudinaryService],
   exports: [TierListRepository]
 })
 export class TierListModule {}

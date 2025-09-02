@@ -1,150 +1,106 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { TierListController } from "./tier.list.controller";
-import { TierListService } from "../../../application/services/tier.list.service";
-import { randomUUID } from "crypto";
+import { Test, TestingModule } from '@nestjs/testing';
+import { TierListController } from './tier.list.controller';
+import { TierListService } from '../../../application/services/tier.list.service';
+import { CloudinaryService } from '../../../application/services/cloudinary.service';
+import { User } from '../../../domain/entities/user.entity';
+import { randomUUID } from 'crypto';
+import toStream = require('buffer-to-stream');
+
 describe('TierListController', () => {
-    let controller: TierListController;
-    let service: TierListService;
+  let controller: TierListController;
+  let tierListService: TierListService;
+  let cloudinaryService: CloudinaryService;
 
-    /*
-     * {
-        "tierListId": "fee3fde2-3604-40e4-9224-0ce8b19e8704",
-        "tierListName": "Another Favorite Video Games",
-        "tierListType": "Tournament",
-        "thumbnailUrl": "/wuwa.jpg",
-        "user": {
-            "userId": "adb73f8a-9509-4841-bdb1-a7fab951c50d",
-            "username": "testuser_postman",
-            "password": "$2b$10$PoHnQDZ/iWYUNcc1Yeo2SehQ5nCb0SPp7AFkGGcP86gvJy06aU4RG",
-            "email": "testuser_postman2@gmail.com",
-            "tokenVersion": 0
-        },
-        "items": [
-            {
-                "itemId": "d24088da-c7d6-42e0-816f-f4fab7b7c217",
-                "itemName": "NBA 2K24",
-                "itemPhotoUrl": null
-            },
-            {
-                "itemId": "151ea519-0c06-4356-af57-c56e451553c5",
-                "itemName": "Minecraft again",
-                "itemPhotoUrl": null
-            },
-            {
-                "itemId": "ae4b2122-58b1-4bee-a6aa-e8381f95849d",
-                "itemName": "Minecraft",
-                "itemPhotoUrl": null
-            }
-        ],
-        "comments": [],
-        "itemCount": 3,
-        "ratingCount": 0,
-        "commentCount": 0,
-        "likeCount": 0,
-        "createdAt": "2025-09-01T06:50:11.305Z",
-        "updatedAt": "2025-09-01T06:50:11.305Z",
-        "likes": [],
-        "categories": [
-            "abc",
-            "cde"
-        ]
-    }
-     */
+  // Mock for the TierListService
+  const mockTierListService = {
+    create: jest.fn(),
+    addThumbnail: jest.fn(),
+    // Add other methods used in your controller as needed
+    findAll: jest.fn(),
+    findAllForUser: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+    likeTierList: jest.fn(),
+  };
 
-    const mockUser = {
-        userId: randomUUID(),
-        username: "testuser_postman",
-        password: "password123",
-        email: "testuser_postman2@gmail.com",
-        tokenVersion: 0,
-        tierLists: [],
-        ratings: [],
-        comments: [],
-        likes: [],
-    }
+  // --- FIX: Create a mock for the CloudinaryService ---
+  const mockCloudinaryService = {
+    uploadImage: jest.fn(),
+  };
 
-    const mockCreateTierListDto = {
-        tierListName: 'Tier List Name',
-        tierListType: 'Tournament',
-        thumbnailUrl: '/img.jpg',
-        items: [],
-        categories: []
-    }
-
-    const failMockCreateTierListDto = {
-        tierListName: 'Tier List Name',
-        tierListType: 'Tournament',
-        thumbnailUrl: '/img.jpg',
-        items: [],
-        categories: []
-    }
-
-    const mockCreateTierList = {
-        tierListId: randomUUID(),
-        tierListName: "Tier List Name",
-        tierListType: "Tournament",
-        thumbnailUrl: "/img.jpg",
-        comments : [],
-        itemCount: 1,
-        items: [],
-        ratingCount: 1,
-        commentCount: 1,
-        likeCount: 1,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-        likes: [],
-        user: mockUser
-    }
-
-    const mockTierListService = {
-        create: jest.fn((dto, user) => {
-            return mockCreateTierList
-        })
-    }
-
-    beforeEach( async () => {
-        const module: TestingModule = await Test.createTestingModule({
-            controllers:[TierListController],
-            providers: [TierListService]
-        }).overrideProvider(TierListService).useValue(mockTierListService).compile();
-        
-        controller = module.get<TierListController> (TierListController)
-        service = module.get<TierListService>(TierListService);
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [TierListController],
+      providers: [TierListService, CloudinaryService],
     })
+      // Override the real services with our mocks
+      .overrideProvider(TierListService)
+      .useValue(mockTierListService)
+      .overrideProvider(CloudinaryService)
+      .useValue(mockCloudinaryService)
+      .compile();
 
-    afterEach(() => {
-        jest.clearAllMocks(); 
+    controller = module.get<TierListController>(TierListController);
+    tierListService = module.get<TierListService>(TierListService);
+    cloudinaryService = module.get<CloudinaryService>(CloudinaryService);
+  });
+  
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  describe('create', () => {
+    it('should create and return a new tier list owned by user', async () => {
+      const createDto = { tierListName: 'Test List', categories: ['S', 'A'], tierListType: 'Rating', thumbnailUrl: '/hello.jpg' };
+      const user = { userId: randomUUID() } as User;
+      const expectedResult = { tierListId: randomUUID(), ...createDto };
+
+      mockTierListService.create.mockResolvedValue(expectedResult);
+
+      const result = await controller.create(createDto, user);
+      expect(tierListService.create).toHaveBeenCalledWith(createDto, user);
+      expect(result).toEqual(expectedResult);
     });
+  });
+  
+  describe('uploadThumbnail', () => {
+    it('should upload a thumbnail and update the tier list', async () => {
+      const tierListId = randomUUID();
+      const user = { userId: randomUUID() } as User;
+      const mockFile: Express.Multer.File = {
+        fieldname: 'file',
+        originalname: 'thumbnail.png',
+        encoding: '7bit',
+        mimetype: 'image/png',
+        buffer: Buffer.from('fake image data'),
+        size: 12345,
+        stream: toStream(Buffer.from('fake image data')),
+        destination: '',
+        filename: '',
+        path: '',
+      };
+      const mockUploadResult = {
+        secure_url: 'http://cloudinary.com/path/to/image.png',
+      };
+      // Mock the return values of our service calls
+      mockCloudinaryService.uploadImage.mockResolvedValue(mockUploadResult as any);
+      mockTierListService.addThumbnail.mockResolvedValue({ success: true });
+      // Act
+      const result = await controller.uploadThumbnail(tierListId, mockFile, user);
+      // Assert
+      expect(cloudinaryService.uploadImage).toHaveBeenCalledWith(mockFile);
+      expect(tierListService.addThumbnail).toHaveBeenCalledWith(
+        tierListId,
+        mockUploadResult.secure_url,
+        user.userId,
+      );
+      expect(result).toEqual({ success: true });
+    });
+  });
+});
 
-    it('Should be defined', () => {
-        expect(controller).toBeDefined();
-    })
-
-    describe('create', () => {
-        it('should create and return a new tier list owned by user', async () => {
-            const result = await controller.create(mockCreateTierListDto, mockUser);
-            expect(service.create).toHaveBeenCalledWith(mockCreateTierListDto, mockUser);
-            // expect(result.email).toEqual(mockUserSignUp.email);
-            expect(result).toHaveProperty('tierListId');
-        });
-
-        it('Should fail to create and return a new tier list owned by user - incomplete fields', async () => {
-            const badCreateTierListDto = failMockCreateTierListDto
-        });
-    })
-    
-    describe('findAll', () => {})
-    
-    describe('findAllForUser', () => {})
-    
-    describe('findOne', () => {})
-    
-    describe('update', () => {})
-    
-    describe('remove', () => {})
-    
-    describe('addThumbnail', () => {})
-    
-    describe('likeTierList', () => {})
-
-})

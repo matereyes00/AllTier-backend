@@ -109,23 +109,16 @@ export class TierListService {
     return this.tierListRepository.incrementLikes(userId, tierList.tierListId);
   }
 
-  async addThumbnail(tierListId: string, filePath: string, updateTierListDto: UpdateTierListDto) {
-    // Find the tier list by its ID
-    const tierList = await this.tierListRepository.findById(tierListId );
-    if (!tierList) {
-      throw new NotFoundException(`TierList with ID "${tierListId}" not found`);
-    }
-
-    // You might want to format the path into a full URL
-    // This depends on how you serve your static files
-    // const thumbnailUrl = `http://localhost:3000/${filePath}`;
-
-    // Update the thumbnailUrl property
-    tierList.thumbnailUrl = updateTierListDto.thumbnailUrl;
-    
-
-    // Save the updated entity to the database
-    return this.tierListRepository.update(tierList, updateTierListDto);
+  /**
+   * Updates the thumbnail URL for a specific tier list.
+   * @param id The ID of the tier list.
+   * @param thumbnailUrl The public URL from Cloudinary.
+   * @param userId The ID of the user making the request.
+   */
+  async addThumbnail(id: string, thumbnailUrl: string, userId: string): Promise<TierList> {
+    const tierList = await this.findOne(id, userId); // Re-use your existing logic to find and authorize
+    tierList.thumbnailUrl = thumbnailUrl; // Update the thumbnail property
+    return this.tierListRepository.save(tierList);
   }
 
 

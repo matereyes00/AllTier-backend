@@ -90,6 +90,10 @@ export class TierListRepository extends BaseRepository<TierList> {
     return super.findAllByUserId('user', userId, { user: true });
   }
 
+  async save(tierList: TierList): Promise<TierList> {
+    return this.save(tierList);
+  }
+
   async update(
     tierList: TierList,
     updateTierListDto: UpdateTierListDto,
