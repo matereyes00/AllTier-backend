@@ -4,12 +4,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TierListInterceptor } from './infrastructure/http/interceptors/tier.lists.interceptor';
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { LoggingInterceptor } from './infrastructure/http/interceptors/logging.interceptor';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   // app.useGlobalInterceptors(new TierListInterceptor());
+  app.useGlobalInterceptors(new LoggingInterceptor());
   app.enableCors({
     origin: 'http://localhost:4000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
