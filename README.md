@@ -85,3 +85,6 @@ To run the application in a containerized development environment with hot-reloa
 ```sh
 docker-compose up --build
 ```
+
+---
+Copyright &copy; 2025 AllTier

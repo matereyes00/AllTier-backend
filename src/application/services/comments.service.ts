@@ -79,4 +79,18 @@ export class CommentsService {
     }
     return this.commentRepository.update(comment, updateCommentDto);
   }
+
+  async removeComment(commentId: string, userId: string): Promise<string> {
+    const comment = await this.findOne(commentId, userId); // findOne includes ownership check
+    if (!comment) {
+      throw new NotFoundException(`Comment with ID "${commentId}" not found`);
+    }
+    if (comment.user.userId !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to access this comment',
+      );
+    }
+    this.commentRepository.remove(comment);
+    return `Comment ${comment.commentId} removed from database`
+  }
 }
