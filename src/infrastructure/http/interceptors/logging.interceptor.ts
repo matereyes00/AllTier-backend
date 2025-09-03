@@ -5,8 +5,8 @@ import {
   CallHandler,
   Logger,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -14,13 +14,11 @@ export class LoggingInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     const request = context.switchToHttp().getRequest();
-    const { method, url, body } = request; // Get the body from the request
+    const { method, url, body } = request;
     const userAgent = request.get('user-agent') || '';
     const ip = request.ip;
     
-    // Create the initial log message
     let requestLog = `[Request] ${method} ${url} - IP: ${ip} - User-Agent: ${userAgent}`;
-    // --- ADDITION: Log the request body if it exists ---
     if (body && Object.keys(body).length > 0) {
       requestLog += ` - Body: ${JSON.stringify(body)}`;
     }
@@ -32,15 +30,33 @@ export class LoggingInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
+        // The 'tap' operator handles successful responses
         tap((responseBody) => {
           const response = context.switchToHttp().getResponse();
           const { statusCode } = response;
           const duration = Date.now() - now;
           
-          const responseLog = `[Response] ${statusCode} ${method} ${url} - Duration: ${duration}ms - Body: ${JSON.stringify(responseBody)}`;
+          const responseLog = `[SUCCESS Response] ${statusCode} ${method} ${url} - Duration: ${duration}ms - Body: ${JSON.stringify(responseBody)}`;
           
           this.logger.log(responseLog);
+        }),
+        // --- ADDITION: The 'catchError' operator handles errors ---
+        catchError((error) => {
+          const duration = Date.now() - now;
+          // Determine the status code from the error, defaulting to 500
+          const statusCode = error.getStatus ? error.getStatus() : 500;
+          
+          // Use the logger's 'error' method for exceptions
+          this.logger.error(
+            `[ERROR Response] ${statusCode} ${method} ${url} - Duration: ${duration}ms`,
+            // Log the error's stack trace for detailed debugging
+            error.stack,
+          );
+
+          // Re-throw the error to ensure the client receives the proper HTTP error response
+          return throwError(() => error);
         }),
       );
   }
 }
+
