@@ -22,14 +22,18 @@ import { UpdateItemDto } from '../../../application/dtos/Items/update-item.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateItemDto } from '../../../application/dtos/Items/create-item.dto';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Item } from '../../../domain/entities/item.entity';
+import { CloudinaryService } from 'src/application/services/cloudinary.service';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @Controller('tier-lists/:tierListId/items')
 export class ItemsController {
-  constructor(private readonly itemsService: ItemsService) {}
+  constructor(
+    private readonly itemsService: ItemsService,
+    private readonly cloudinaryService: CloudinaryService,
+  ) {}
 
   @Post('create-item')
   @ApiOperation({
@@ -62,7 +66,6 @@ export class ItemsController {
   async createItem(
     @Param('tierListId', ParseUUIDPipe) tierListId: string,
     @UploadedFile(
-      // Optional: Add validation for the uploaded file
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 5 }), // 5 MB
@@ -82,17 +85,27 @@ export class ItemsController {
   @ApiOperation({ summary: 'Update an existing item' })
   @ApiParam({ name: 'tierListId', type: 'string', format: 'uuid', description: 'The ID of the parent tier list' })
   @ApiParam({ name: 'itemId', type: 'string', format: 'uuid', description: 'The ID of the item to update' })
+  @ApiConsumes('multipart/form-data') // 3. Specify this endpoint accepts form-data
+  @UseInterceptors(FileInterceptor('photo')) // 4. Use the FileInterceptor to handle the image
   async updateItem(
     @Param('tierListId') tierListId: string, 
     @Param('itemId') itemId: string,
     @CurrentUser() user: User,
-    @Body() updateItemDto: UpdateItemDto
+    @Body() updateItemDto: UpdateItemDto,
+    @UploadedFile() photo?: Express.Multer.File,
   ) {
+    let photoUrl: string | undefined = undefined;
+    if (photo) {
+      const uploadResult = await this.cloudinaryService.uploadImage(photo);
+      photoUrl = uploadResult.secure_url;
+    }
+
     return this.itemsService.updateItem(
       itemId,
       tierListId,
       user.userId, 
-      updateItemDto
+      updateItemDto,
+      photoUrl, // Pass the new URL
     )
   }
 

@@ -12,6 +12,7 @@ import { User } from '../../domain/entities/user.entity';
 import { TierListLikesModule } from './likes.module';
 import { TierListModule } from './tier.list.module';
 import { TierListLikeRepository } from '../database/repositories/like.repository';
+import { CloudinaryService } from 'src/application/services/cloudinary.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Item, TierList, User]), 
@@ -21,6 +22,6 @@ import { TierListLikeRepository } from '../database/repositories/like.repository
     forwardRef(() => TierListModule)
   ],
   controllers: [ItemsController],
-  providers: [ItemsService, ItemRepository],
+  providers: [ItemsService, ItemRepository, CloudinaryService],
 })
 export class ItemModule {}

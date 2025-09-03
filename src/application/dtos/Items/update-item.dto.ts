@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class UpdateItemDto {
   @IsString()
@@ -19,11 +19,11 @@ export class UpdateItemDto {
   category: string;
 
   @IsOptional()
+  @IsUrl()
   @ApiProperty({
-    type: String,
-    description:
-      'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
-    example: 'tournament',
+    description: "The item's new photo URL from Cloudinary.",
+    required: false,
+    example: 'https://res.cloudinary.com/demo/image/upload/new-image.jpg',
   })
-  tierListThumbnailUrl: string;   
+  itemPhotoUrl?: string; 
 }

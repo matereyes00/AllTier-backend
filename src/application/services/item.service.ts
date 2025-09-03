@@ -50,6 +50,7 @@ export class ItemsService {
       tierListId: string,
       userId: string,
       updateItemDto: UpdateItemDto,
+      photoUrl?: string, // The new, optional parameter
     ): Promise<Item> {
       
       const tierList = await this.findOneTierList(tierListId); // findOne includes ownership check
@@ -64,6 +65,10 @@ export class ItemsService {
         throw new ForbiddenException(
           'You do not have permission to access this tier list',
         );
+      }
+      // 2. If a new photoUrl was provided, add it to the DTO before updating
+      if (photoUrl) {
+        updateItemDto.itemPhotoUrl = photoUrl;
       }
       return this.itemRepository.update(item, updateItemDto);
     }

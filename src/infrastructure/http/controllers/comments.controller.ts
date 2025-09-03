@@ -2,6 +2,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Patch,
   Post,
@@ -79,5 +80,18 @@ export class CommentsController {
       updateCommentDto,
       user.userId,
     );
+  }
+
+  @Delete('remove-comment/:id')
+  @ApiOperation({
+    summary: 'Delete a tier list for the current logged in user',
+  })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
+  })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
+  async remove(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.commentsService.removeComment(id, user.userId);
   }
 }
