@@ -5,6 +5,7 @@ import { TierListInterceptor } from './infrastructure/http/interceptors/tier.lis
 import { join } from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggingInterceptor } from './infrastructure/http/interceptors/logging.interceptor';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   // const app = await NestFactory.create(AppModule);
@@ -17,6 +18,12 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true, // Strips properties that do not have any decorators
+    forbidNonWhitelisted: true, // Throws an error if non-whitelisted values are provided
+    transform: true, // Automatically transform payloads to be objects typed according to their DTO classes
+  }));
 
    app.useStaticAssets(join(__dirname, '..', 'uploads'), {
     prefix: '/uploads/',

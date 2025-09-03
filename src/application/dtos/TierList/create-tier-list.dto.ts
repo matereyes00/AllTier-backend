@@ -1,10 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { IsString, IsArray, IsOptional, ValidateNested, IsNotEmpty } from 'class-validator';
 import { CreateItemDto } from '../Items/create-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateTierListDto {
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     description:
@@ -14,6 +15,7 @@ export class CreateTierListDto {
   tierListName: string;
 
   @IsString()
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     description: 'The tier list type can only be rating or tournament',
@@ -28,6 +30,7 @@ export class CreateTierListDto {
       'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
     example: '',
   })
+  @IsOptional()
   tierListThumbnailUrl: string;   
 
   @IsArray()

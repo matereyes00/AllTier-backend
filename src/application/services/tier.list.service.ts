@@ -26,9 +26,6 @@ export class TierListService {
         'You must be logged in to create a tier list',
       );
     }
-    if (!createTierListDto.tierListName) {
-      throw new BadRequestException('Tier list must have a title');
-    }
     try {
       return await this.tierListRepository.create(createTierListDto, user);
     } catch (err) {

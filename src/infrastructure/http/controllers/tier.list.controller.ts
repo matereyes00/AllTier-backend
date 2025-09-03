@@ -12,6 +12,7 @@ import {
   UploadedFile,
   BadRequestException,
   UploadedFiles,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
@@ -57,7 +58,7 @@ export class TierListController {
   @ApiForbiddenResponse({
     description: 'You must be logged in to create a tier list',
   })
-  @ApiBadRequestResponse({ description: 'Tier list must have a title' })
+  // @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   async create(
     @UploadedFiles() files: { 
@@ -98,8 +99,15 @@ export class TierListController {
       categories: categories, // Already a proper array thanks to the pipe
       tierListThumbnailUrl: thumbnailUrl,
       items: itemsWithImages,
-      
     };
+
+    const validationPipe = new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true });
+    try {
+      await validationPipe.transform(createTierListDto, { metatype: CreateTierListDto, type: 'body' });
+    } catch (e) {
+      throw new BadRequestException(e.getResponse());
+    }
+
     return this.tierListService.create(createTierListDto, user);
   }
 

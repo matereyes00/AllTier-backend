@@ -11,6 +11,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     description: 'This is the unique identifier the user will go by.',
@@ -23,6 +24,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   @MaxLength(20)
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     description: 'This is what is needed for the user to access their account.',
@@ -35,6 +37,7 @@ export class CreateUserDto {
   @IsString()
   @MinLength(8)
   @MaxLength(20)
+  @IsNotEmpty()
   @ApiProperty({
     type: String,
     description: 'This is used to verify the created password.',

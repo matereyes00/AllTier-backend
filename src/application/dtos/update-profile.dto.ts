@@ -17,7 +17,7 @@ export class UpdateUserDto {
     example: 'AHeavyDefinitelyNotHackablePassword',
     minLength: 8,
   })
-  @IsOptional({ message: 'Password cannot be empty' })
-  @MinLength(8, { message: 'Password has to be at least 5 characters long' })
+  @IsOptional()
+  @MinLength(8, { message: 'Password has to be at least 8 characters long' })
   password: string;
 }

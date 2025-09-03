@@ -14,7 +14,7 @@ export class CreateItemDto {
   itemName: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'The category of the item to include in the Tier List.',
     type: String,

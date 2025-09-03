@@ -1,9 +1,9 @@
-import { IsString, IsNotEmpty } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCommentDto {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @ApiProperty({
     description: 'The comment the user leaves for the respective tier list.',
     minimum: 1,
