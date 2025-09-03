@@ -33,6 +33,7 @@ import { User } from '../../../domain/entities/user.entity';
 import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
 import { CloudinaryService } from '../../../application/services/cloudinary.service';
 import { CreateItemDto } from 'src/application/dtos/Items/create-item.dto';
+import { JsonParsePipe } from '../pipes/json-parse.pipe';
 
 @ApiBearerAuth()
 @Controller('tierlists')
@@ -59,16 +60,15 @@ export class TierListController {
   @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   async create(
-    @UploadedFiles() files: { tierListThumbnail?: Express.Multer.File[], itemImages?: Express.Multer.File[] },
-    @Body() body: any,
+    @UploadedFiles() files: { 
+      tierListThumbnail?: Express.Multer.File[], itemImages?: 
+      Express.Multer.File[] },
+    @Body('tierListName') tierListName: string,
+    @Body('tierListType') tierListType: string,
+    @Body('categories', new JsonParsePipe()) categories: string[],
+    @Body('items', new JsonParsePipe()) itemsDto: CreateItemDto[],
     @CurrentUser() user: User,
   ) {
-
-     // 6. Parse the stringified items array from the body
-    if (!body.items) {
-      throw new BadRequestException('Items array is required.');
-    }
-    const itemsDto: CreateItemDto[] = JSON.parse(body.items);
 
     // 7. Upload the main thumbnail to Cloudinary (if it exists)
     let thumbnailUrl = '';
@@ -93,9 +93,9 @@ export class TierListController {
     }));
 
     const createTierListDto: CreateTierListDto = {
-      tierListName: body.tierListName,
-      tierListType: body.tierListType,
-      categories: JSON.parse(body.categories || '[]'),
+      tierListName: tierListName,
+      tierListType: tierListType,
+      categories: categories, // Already a proper array thanks to the pipe
       tierListThumbnailUrl: thumbnailUrl,
       items: itemsWithImages,
       
@@ -117,7 +117,6 @@ export class TierListController {
   }
 
   @Get('my-tier-lists')
-  // @UseInterceptors(TierListInterceptor)
   @ApiOperation({
     summary: 'Get all tier lists for the logged in user',
   })

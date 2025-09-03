@@ -26,7 +26,7 @@ export class CreateTierListDto {
     type: String,
     description:
       'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
-    example: 'tournament',
+    example: '',
   })
   tierListThumbnailUrl: string;   
 
