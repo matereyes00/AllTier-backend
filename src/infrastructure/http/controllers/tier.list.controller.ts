@@ -123,6 +123,19 @@ export class TierListController {
     return this.tierListService.findAll();
   }
 
+  @Get('all-tier-lists/:tierListId')
+  @ApiOperation({
+    summary: 'Get a specific tier list while logged out',
+  })
+  @ApiNotFoundResponse({ description: 'Tier List not found' })
+  @ApiForbiddenResponse({
+    description: '⚠️ User has no permissions to access this tier list',
+  })
+  @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
+  async findAllLoggedOut(@Param('tierListId') id: string, @CurrentUser() user: User) {
+    return this.tierListService.findOne(id, user.userId);
+  }
+
   @Get('my-tier-lists')
   @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
