@@ -38,7 +38,6 @@ import { JsonParsePipe } from '../pipes/json-parse.pipe';
 
 @ApiBearerAuth()
 @Controller('tierlists')
-@UseGuards(AuthGuard('jwt'))
 export class TierListController {
   constructor(
     private readonly tierListService: TierListService,
@@ -53,17 +52,19 @@ export class TierListController {
   @ApiBody({ type: CreateTierListDto })
   @UseInterceptors(FileFieldsInterceptor([ // 4. Use the interceptor for mixed files
     { name: 'tierListThumbnail', maxCount: 1 },    // Expect one file for the thumbnail
-    { name: 'itemImages', maxCount: 20 }, // Expect up to 20 files for the items
+    { name: 'itemThumbnail', maxCount: 20 }, // Expect up to 20 files for the items
   ]))
   @ApiForbiddenResponse({
     description: 'You must be logged in to create a tier list',
   })
-  // @ApiBadRequestResponse({ description: 'Tier list must have a title' })
+  @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
+  @UseGuards(AuthGuard('jwt'))
   async create(
     @UploadedFiles() files: { 
-      tierListThumbnail?: Express.Multer.File[], itemImages?: 
-      Express.Multer.File[] },
+      tierListThumbnail?: Express.Multer.File[], 
+      itemImages?: Express.Multer.File[] 
+    },
     @Body('tierListName') tierListName: string,
     @Body('tierListType') tierListType: string,
     @Body('categories', new JsonParsePipe()) categories: string[],
@@ -71,14 +72,12 @@ export class TierListController {
     @CurrentUser() user: User,
   ) {
 
-    // 7. Upload the main thumbnail to Cloudinary (if it exists)
     let thumbnailUrl = '';
     if (files.tierListThumbnail && files.tierListThumbnail[0]) {
       const uploadResult = await this.cloudinaryService.uploadImage(files.tierListThumbnail[0]);
       thumbnailUrl = uploadResult.secure_url;
     }
 
-    // 8. Upload all item images to Cloudinary
     const itemImageUrls: string[] = [];
     if (files.itemImages && files.itemImages.length > 0) {
       for (const file of files.itemImages) {
@@ -125,6 +124,7 @@ export class TierListController {
   }
 
   @Get('my-tier-lists')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get all tier lists for the logged in user',
   })
@@ -138,6 +138,7 @@ export class TierListController {
   }
 
   @Get('my-tier-list/:id')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Get a specific tier list owned by the logged in user',
   })
@@ -151,6 +152,7 @@ export class TierListController {
   }
 
   @Patch('update-tier-list/:id')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Update a tier list for the current logged in user',
   })
@@ -168,6 +170,7 @@ export class TierListController {
   }
 
   @Delete('remove-tier-list/:id')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Delete a tier list for the current logged in user',
   })
@@ -182,6 +185,7 @@ export class TierListController {
 
   @UseInterceptors(TierListInterceptor)
   @Patch('like/:id')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Like a tier list. Any user can like any tier list created by other users. Users can also like their own tier lists. A user cannot like a tier list twice',
   })
@@ -190,6 +194,7 @@ export class TierListController {
   }
 
   @Patch(':id/thumbnail')
+  @UseGuards(AuthGuard('jwt'))
   @ApiOperation({
     summary: 'Upload or update a thumbnail for the tier list',
   })
