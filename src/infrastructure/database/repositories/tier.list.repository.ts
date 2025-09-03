@@ -91,7 +91,7 @@ export class TierListRepository extends BaseRepository<TierList> {
   }
 
   async save(tierList: TierList): Promise<TierList> {
-    return this.save(tierList);
+    return this.tierListRepository.save(tierList);
   }
 
   async update(
