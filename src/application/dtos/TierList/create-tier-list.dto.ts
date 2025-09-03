@@ -28,7 +28,7 @@ export class CreateTierListDto {
       'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
     example: 'tournament',
   })
-  thumbnailUrl: string;   
+  tierListThumbnailUrl: string;   
 
   @IsArray()
   @ValidateNested({ each: true })

@@ -112,12 +112,12 @@ export class TierListService {
   /**
    * Updates the thumbnail URL for a specific tier list.
    * @param id The ID of the tier list.
-   * @param thumbnailUrl The public URL from Cloudinary.
+   * @param tierListThumbnailUrl The public URL from Cloudinary.
    * @param userId The ID of the user making the request.
    */
-  async addThumbnail(id: string, thumbnailUrl: string, userId: string): Promise<TierList> {
+  async addThumbnail(id: string, tierListThumbnailUrl: string, userId: string): Promise<TierList> {
     const tierList = await this.findOne(id, userId); // Re-use your existing logic to find and authorize
-    tierList.thumbnailUrl = thumbnailUrl; // Update the thumbnail property
+    tierList.tierListThumbnailUrl = tierListThumbnailUrl; // Update the thumbnail property
     return this.tierListRepository.save(tierList);
   }
 

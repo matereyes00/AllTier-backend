@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID, IsOptional, ValidateIf, IsUrl } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateItemDto {
@@ -21,4 +21,15 @@ export class CreateItemDto {
     example: 'Category 1',
   })
   category: string;
+
+  @IsOptional()
+  @ValidateIf(o => o.itemPhotoUrl !== null) // This ensures @IsUrl is only applied if the value is not null
+  @IsUrl() 
+  @ApiProperty({
+    description: 'The URL of the photo for this item, uploaded to Cloudinary.',
+    required: false,
+    nullable: true, 
+    example: 'http://res.cloudinary.com/demo/image/upload/v123/item.jpg',
+  })
+  itemPhotoUrl?: string | null;
 }

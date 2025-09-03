@@ -26,7 +26,7 @@ export class TierList {
   tierListType: string;
 
   @Column({ type: 'varchar', nullable: true })
-  thumbnailUrl: string;
+  tierListThumbnailUrl: string;
 
   // creator
   @ManyToOne(() => User, (user) => user.tierLists)

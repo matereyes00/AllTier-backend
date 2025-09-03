@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateItemDto {
   @IsString()
@@ -17,4 +17,13 @@ export class UpdateItemDto {
     example: 'Category 2',
   })
   category: string;
+
+  @IsOptional()
+  @ApiProperty({
+    type: String,
+    description:
+      'The tier list thumbnail to be created. The tier list thumbnail can only be image paths',
+    example: 'tournament',
+  })
+  tierListThumbnailUrl: string;   
 }

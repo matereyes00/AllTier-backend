@@ -30,34 +30,20 @@ export class TierListRepository extends BaseRepository<TierList> {
     super(TierList, dataSource);
   }
 
-  // async create(
-  //   createTierListDto: CreateTierListDto,
-  //   user: User,
-  // ): Promise<TierList> {
-  //   const tierList = this.tierListRepository.create({
-  //     tierListName: createTierListDto.tierListName,
-  //     tierListType: createTierListDto.tierListType,
-  //     user,
-  //     items: createTierListDto.items,
-  //   });
-  //   return this.tierListRepository.save(tierList);
-  // }
-
   async create(
     createTierListDto: CreateTierListDto,
     user: User,
   ): Promise<TierList> {
-    // A transaction is still best practice for creating a parent and its children
     return this.dataSource.transaction(async (transactionalEntityManager) => {
       const itemCount = createTierListDto.items?.length || 0;
       // 1️⃣ Create the TierList entity and directly assign the categories array
       const tierList = transactionalEntityManager.create(TierList, {
         tierListName: createTierListDto.tierListName,
         tierListType: createTierListDto.tierListType,
-        thumbnailUrl: createTierListDto.thumbnailUrl,
+        tierListThumbnailUrl: createTierListDto.tierListThumbnailUrl,
         user,
         categories: createTierListDto.categories || [], // Directly assign the string array
-        itemCount: itemCount, // ✨ Set the initial item count
+        itemCount: itemCount,
       });
       await transactionalEntityManager.save(tierList);
 
@@ -68,6 +54,7 @@ export class TierListRepository extends BaseRepository<TierList> {
             itemName: itemDto.itemName,
             category: itemDto.category, // Assign category as a simple string
             tierList: tierList, // Link back to the new TierList
+            itemPhotoUrl: itemDto.itemPhotoUrl,
           });
         });
         await transactionalEntityManager.save(itemsToCreate);

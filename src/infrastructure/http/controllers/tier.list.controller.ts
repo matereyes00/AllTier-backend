@@ -11,11 +11,13 @@ import {
   ParseUUIDPipe,
   UploadedFile,
   BadRequestException,
+  UploadedFiles,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TierListService } from '../../../application/services/tier.list.service';
 import { CreateTierListDto } from '../../../application/dtos/TierList/create-tier-list.dto';
 import { UpdateTierListDto } from '../../../application/dtos/TierList/update-tier-list.dto';
+import { FileInterceptor, FileFieldsInterceptor } from '@nestjs/platform-express'; // 2. Import FileFieldsInterceptor
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -29,8 +31,8 @@ import {
 import { CurrentUser } from '../decorators/current.user.decorator';
 import { User } from '../../../domain/entities/user.entity';
 import { TierListInterceptor } from '../interceptors/tier.lists.interceptor';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from '../../../application/services/cloudinary.service';
+import { CreateItemDto } from 'src/application/dtos/Items/create-item.dto';
 
 @ApiBearerAuth()
 @Controller('tierlists')
@@ -45,16 +47,59 @@ export class TierListController {
   @ApiOperation({
     summary: 'Create a tier list for the logged in user',
   })
+  @ApiConsumes('multipart/form-data') // 3. Specify that this endpoint consumes multipart/form-data
   @ApiBody({ type: CreateTierListDto })
+  @UseInterceptors(FileFieldsInterceptor([ // 4. Use the interceptor for mixed files
+    { name: 'tierListThumbnail', maxCount: 1 },    // Expect one file for the thumbnail
+    { name: 'itemImages', maxCount: 20 }, // Expect up to 20 files for the items
+  ]))
   @ApiForbiddenResponse({
     description: 'You must be logged in to create a tier list',
   })
   @ApiBadRequestResponse({ description: 'Tier list must have a title' })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
   async create(
-    @Body() createTierListDto: CreateTierListDto,
+    @UploadedFiles() files: { tierListThumbnail?: Express.Multer.File[], itemImages?: Express.Multer.File[] },
+    @Body() body: any,
     @CurrentUser() user: User,
   ) {
+
+     // 6. Parse the stringified items array from the body
+    if (!body.items) {
+      throw new BadRequestException('Items array is required.');
+    }
+    const itemsDto: CreateItemDto[] = JSON.parse(body.items);
+
+    // 7. Upload the main thumbnail to Cloudinary (if it exists)
+    let thumbnailUrl = '';
+    if (files.tierListThumbnail && files.tierListThumbnail[0]) {
+      const uploadResult = await this.cloudinaryService.uploadImage(files.tierListThumbnail[0]);
+      thumbnailUrl = uploadResult.secure_url;
+    }
+
+    // 8. Upload all item images to Cloudinary
+    const itemImageUrls: string[] = [];
+    if (files.itemImages && files.itemImages.length > 0) {
+      for (const file of files.itemImages) {
+        const uploadResult = await this.cloudinaryService.uploadImage(file);
+        itemImageUrls.push(uploadResult.secure_url);
+      }
+    }
+    
+    // 9. Combine the uploaded image URLs with the item DTOs
+    const itemsWithImages = itemsDto.map((item, index) => ({
+      ...item,
+      itemPhotoUrl: itemImageUrls[index] || null, // Assign the corresponding URL or null
+    }));
+
+    const createTierListDto: CreateTierListDto = {
+      tierListName: body.tierListName,
+      tierListType: body.tierListType,
+      categories: JSON.parse(body.categories || '[]'),
+      tierListThumbnailUrl: thumbnailUrl,
+      items: itemsWithImages,
+      
+    };
     return this.tierListService.create(createTierListDto, user);
   }
 

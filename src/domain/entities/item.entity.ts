@@ -17,20 +17,14 @@ export class Item {
   @Column()
   itemName: string;
 
-  // Many items belong to one TierList
   @ManyToOne(() => TierList, (tierList) => tierList.items, {
     onDelete: 'CASCADE',
   })
   tierList: TierList;
 
-  // Many item can have many ratings
-  // @ManyToOne(() => Category, (category) => category.items)
-  // category: Category;
-
   @Column({ type: 'varchar', nullable: true })
-  itemPhotoUrl: string;
+  itemPhotoUrl: string | null;
 
-  // One item can have many ratings
   @OneToMany(() => Rating, (rating) => rating.item)
   ratings: Rating[];
 }

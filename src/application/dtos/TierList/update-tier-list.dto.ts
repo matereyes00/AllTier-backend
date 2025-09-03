@@ -28,7 +28,7 @@ export class UpdateTierListDto {
       'The tier list thumbnail to be updated. The tier list thumbnail can only be image paths',
     example: 'tournament',
   })
-  thumbnailUrl: string;
+  tierListThumbnailUrl: string;
 
   @IsArray()
   @ValidateNested({ each: true })
