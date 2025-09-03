@@ -141,7 +141,6 @@ export class TierListController {
   @ApiOperation({
     summary: 'Upload or update a thumbnail for the tier list',
   })
-  // 3. REMOVE the diskStorage configuration. We will handle the file in memory.
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -163,10 +162,7 @@ export class TierListController {
     if (!file) {
       throw new BadRequestException('File is required for thumbnail upload.');
     }
-    // 4. Upload the image to Cloudinary using our service
     const uploadResult = await this.cloudinaryService.uploadImage(file);
-    // 5. Call the service to update the tier list with the new thumbnail URL
-    //    We pass the secure_url from the Cloudinary response.
     return this.tierListService.addThumbnail(id, uploadResult.secure_url, user.userId);
   }
 

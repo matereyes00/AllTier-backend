@@ -63,17 +63,17 @@ You'll need the following software installed on your machine:
     DB_USERNAME=yourUsername
     DB_PASSWORD=yourPassword
     DB_DATABASE=yourDatabase
-
+    # Access and Refresh Token config
     ACCESS_TOKEN_SECRET_KEY=yourAccessToken
     ACCESS_TOKEN_EXPIRE_IN=1m
     REFRESH_JWT_SECRET=yourRefreshToken
     REFRESH_JWT_EXPIRE_IN=1h
-
+    # Cloundinary 
     CLOUDINARY_CLOUD_NAME=cloudName
     CLOUDINARY_API_KEY=cloudinaryApiKey
     CLOUDINARY_API_SECRET=cloudinaryApiSecret
     ```
-    You can generate ```ACCESS_TOKEN_SECRET_KEY``` and ```REFRESH_JWT_SECRET``` via:
+    You can generate ```ACCESS_TOKEN_SECRET_KEY``` and ```REFRESH_JWT_SECRET``` in your command line or terminal via:
     ```sh
     opsnssl rand -base64 32
     ```

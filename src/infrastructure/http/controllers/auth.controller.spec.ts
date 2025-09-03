@@ -69,19 +69,19 @@ describe('AuthController', () => {
         refreshToken: expect.any(String),
     };
 
-    it('should be defined', () => {
+    it('Should be defined', () => {
         expect(controller).toBeDefined();
     })
 
     describe('signUp', () => {
-        it('should create and return a new user', async () => {
+        it('Should create and return a new user', async () => {
             const result = await controller.signUp(mockUserSignUp);
             expect(service.signUp).toHaveBeenCalledWith(mockUserSignUp);
             expect(result.email).toEqual(mockUserSignUp.email);
             expect(result).toHaveProperty('id');
         });
 
-        it('should throw ConflictException if email already exists', async () => {
+        it('Should throw ConflictException if email already exists', async () => {
             mockAuthService.signUp.mockImplementationOnce(() => {
                 throw new ConflictException('User with this email already exists');
             });
@@ -90,7 +90,7 @@ describe('AuthController', () => {
                 .toThrow(ConflictException);
         });
 
-        it('should throw BadRequestException if passwords do not match', async () => {
+        it('Should throw BadRequestException if passwords do not match', async () => {
             const badSignUpDto = { ...mockUserSignUp, confirmPassword: 'wrong-password' };
             mockAuthService.signUp.mockImplementationOnce(() => {
                 throw new BadRequestException('Passwords do not match');
@@ -102,13 +102,13 @@ describe('AuthController', () => {
     });
 
     describe('login', () => {
-        it('should log a user in and return tokens', async () => {
+        it('Should log a user in and return tokens', async () => {
             const result = await controller.login(mockUserSignIn);
             expect(service.login).toHaveBeenCalledWith(mockUserSignIn);
             expect(result).toEqual(mockUserSignInResult);
         });
 
-        it('should throw UnauthorizedException for invalid credentials', async () => {
+        it('Should throw UnauthorizedException for invalid credentials', async () => {
             mockAuthService.login.mockImplementationOnce(() => {
                 throw new UnauthorizedException('Invalid credentials');
             });
@@ -129,7 +129,7 @@ describe('AuthController', () => {
     })
 
     describe('refreshTokens', () => {
-        it('should return a new set of tokens', async () => {
+        it('Should return a new set of tokens', async () => {
             const userId = randomUUID();
             const refreshToken = 'old-refresh-token';
             const mockRequest = {

@@ -20,9 +20,7 @@ export class LoggingInterceptor implements NestInterceptor {
     
     // Create the initial log message
     let requestLog = `[Request] ${method} ${url} - IP: ${ip} - User-Agent: ${userAgent}`;
-    
     // --- ADDITION: Log the request body if it exists ---
-    // Note: Be cautious logging bodies in production as they might contain sensitive data.
     if (body && Object.keys(body).length > 0) {
       requestLog += ` - Body: ${JSON.stringify(body)}`;
     }
