@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TierList } from './tier.list.entity';
 import { Rating } from './rating.entity';
 import { Comment } from './comment.entity';
@@ -35,4 +35,10 @@ export class User {
 
   @OneToMany(() => TierListLike, (like) => like.user)
   likes: TierListLike[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: string;
 }

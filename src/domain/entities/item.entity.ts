@@ -5,6 +5,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { TierList } from './tier.list.entity';
 import { Rating } from './rating.entity';
@@ -27,4 +29,13 @@ export class Item {
 
   @OneToMany(() => Rating, (rating) => rating.item)
   ratings: Rating[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: string;
+
+  // averageRating: "9.91",
+  // ratingCount: "5000",
 }

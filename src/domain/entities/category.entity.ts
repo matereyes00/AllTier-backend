@@ -4,6 +4,8 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  UpdateDateColumn,
+  CreateDateColumn,
 } from 'typeorm';
 import { TierList } from './tier.list.entity';
 import { Item } from './item.entity';
@@ -23,4 +25,10 @@ export class Category {
 
   // @OneToMany(() => Item, (items) => items.category)
   // items: Item[];
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  createdAt: string;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  updatedAt: string;
 }

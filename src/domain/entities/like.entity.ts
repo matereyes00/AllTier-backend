@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   ManyToOne,
   Unique,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 import { TierList } from './tier.list.entity';
@@ -25,6 +26,6 @@ export class TierListLike {
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
 }
