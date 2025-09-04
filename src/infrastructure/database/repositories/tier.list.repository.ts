@@ -70,7 +70,7 @@ export class TierListRepository extends BaseRepository<TierList> {
   }
 
   async findById(id: string): Promise<TierList | null> {
-    return super.findById('tierListId', id, { user: true });
+    return super.findById('tierListId', id, { user: true, items: true });
   }
 
   async findAllByUserId(userId: string): Promise<TierList[]> {

@@ -36,6 +36,10 @@ export class Item {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
 
-  // averageRating: "9.91",
-  // ratingCount: "5000",
+  @Column({type: 'number'})
+  averageRating: number;
+
+  @Column({type: 'number'})
+  ratingCount: number;
+  
 }

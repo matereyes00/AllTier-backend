@@ -89,13 +89,13 @@ export class TierListController {
     // 9. Combine the uploaded image URLs with the item DTOs
     const itemsWithImages = itemsDto.map((item, index) => ({
       ...item,
-      itemPhotoUrl: itemImageUrls[index] || null, // Assign the corresponding URL or null
+      itemPhotoUrl: itemImageUrls[index] || null,
     }));
 
     const createTierListDto: CreateTierListDto = {
       tierListName: tierListName,
       tierListType: tierListType,
-      categories: categories, // Already a proper array thanks to the pipe
+      categories: categories,
       tierListThumbnailUrl: thumbnailUrl,
       items: itemsWithImages,
     };
@@ -174,11 +174,18 @@ export class TierListController {
     description: '⚠️ User has no permissions to access this tier list',
   })
   @ApiInternalServerErrorResponse({ description: '🚨 Unexpected server error' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('tierListThumbnail')) 
   async update(
     @Param('id') id: string,
     @Body() updateTierListDto: UpdateTierListDto,
     @CurrentUser() user: User,
+    @UploadedFiles() tierListImgFile: Express.Multer.File
   ) {
+    if (tierListImgFile) {
+      const uploadResult = await this.cloudinaryService.uploadImage(tierListImgFile);
+      updateTierListDto.tierListThumbnailUrl = uploadResult.secure_url;
+    }
     return this.tierListService.update(id, updateTierListDto, user.userId);
   }
 

@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsOptional, ValidateNested } from 'class-validator';
+import { IsString, IsArray, IsOptional, ValidateNested, IsUrl } from 'class-validator';
 import { Type } from 'class-transformer';
 import { UpdateItemDto } from '../Items/update-item.dto';
 import { ApiProperty } from '@nestjs/swagger';
@@ -28,6 +28,8 @@ export class UpdateTierListDto {
       'The tier list thumbnail to be updated. The tier list thumbnail can only be image paths',
     example: '',
   })
+  @IsOptional()
+  @IsUrl()
   tierListThumbnailUrl: string;
 
   @IsArray()
