@@ -10,23 +10,28 @@ import { CreateItemDto } from '../dtos/Items/create-item.dto';
 export class ItemsService {
   constructor(
      private readonly tierListRepository: TierListRepository,
-     private readonly itemRepository: ItemRepository) {}
+     private readonly itemRepository: ItemRepository
+    ) {}
 
   async create(tierListId: string, createItemDto: CreateItemDto, photo: Express.Multer.File): Promise<Item> {
-    
     // 1. Construct the URL based on the file's saved path
     // IMPORTANT: You must configure your server to statically serve the 'uploads' folder
     const photoUrl = `http://localhost:3000/${photo.path}`;
+    createItemDto.itemName = createItemDto.itemName
+    createItemDto.itemPhotoUrl = photoUrl
+
+    const tierList = await this.tierListRepository.findById(tierListId);
+    if (!tierList) {
+      throw new NotFoundException(`TierList with ID "${tierListId}" not found`);
+    }
 
     // 2. Create the new entity with the constructed URL
     const newItem = this.itemRepository.create({
-      itemName: createItemDto.itemName,
+      ...createItemDto,
       itemPhotoUrl: photoUrl,
-      tierList: tierListId, // Associate with TierList
+      tierList, 
     });
-
-    // 3. Save to the database
-    return this.itemRepository.save(newItem);
+    return await this.itemRepository.save(await newItem);
   }
 
   async findOneTierList(id: string): Promise<TierList> {
@@ -72,4 +77,8 @@ export class ItemsService {
       }
       return this.itemRepository.update(item, updateItemDto);
     }
+
+  async getItemsFromATierList(tierListId: string): Promise<Item[]> {
+    return this.itemRepository.findAllByTierListId(tierListId)
+  }
 }

@@ -36,10 +36,10 @@ export class Item {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: string;
 
-  @Column({type: 'number'})
-  averageRating: number;
+  @Column({ type: 'int', nullable: true, default: 0 })
+  averageRating: number | null;
 
-  @Column({type: 'number'})
-  ratingCount: number;
+  @Column({ type: 'float', nullable: true, default: 0 })
+  ratingCount: number | null;
   
 }

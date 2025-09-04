@@ -6,6 +6,7 @@ import { DataSource, Repository } from "typeorm";
 import { BaseRepository } from "./base.repository";
 import { UpdateItemDto } from "../../../application/dtos/Items/update-item.dto";
 import { Rating } from "src/domain/entities/rating.entity";
+import { CreateItemDto } from "src/application/dtos/Items/create-item.dto";
 
 @Injectable()
 export class ItemRepository extends BaseRepository<Item> {
@@ -22,6 +23,10 @@ export class ItemRepository extends BaseRepository<Item> {
     super(Item, dataSource)
   }
 
+  async create(itemData: Partial<Item>): Promise<Item> {
+    return this.itemRepository.create(itemData)
+  }
+
   async findById(id: string): Promise<Item | null> {
     return super.findById('itemId', id);
   }
@@ -32,6 +37,15 @@ export class ItemRepository extends BaseRepository<Item> {
   ): Promise<Item> {
     this.itemRepository.merge(item, updateItemDto);
     return this.itemRepository.save(item);
+  }
+
+  async save(item: Item): Promise<Item> {
+    return this.itemRepository.save(item);
+  }
+
+  // ? GET 
+  async findAllByTierListId(tierListId: string) {
+    return super.findAllByRelationId('tierList', 'tierListId', tierListId )
   }
 
   // ? QUERIES

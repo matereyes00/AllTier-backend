@@ -63,14 +63,19 @@ export class TierListController {
   async create(
     @UploadedFiles() files: { 
       tierListThumbnail?: Express.Multer.File[], 
-      itemImages?: Express.Multer.File[] 
+      itemThumbnail?: Express.Multer.File[] // Changed from 'itemImages' to 'itemThumbnail'
     },
-    @Body('tierListName') tierListName: string,
-    @Body('tierListType') tierListType: string,
-    @Body('categories', new JsonParsePipe()) categories: string[],
-    @Body('items', new JsonParsePipe()) itemsDto: CreateItemDto[],
+    @Body() body: any,
     @CurrentUser() user: User,
   ) {
+    console.log('--- RECEIVED FILES ---');
+    console.log(files);
+    console.log('----------------------');
+    if (!body.categories || !body.items) {
+      throw new BadRequestException('Categories and items fields are required.');
+    }
+    const categories = JSON.parse(body.categories);
+    const itemsDto: CreateItemDto[] = JSON.parse(body.items);
 
     let thumbnailUrl = '';
     if (files.tierListThumbnail && files.tierListThumbnail[0]) {
@@ -78,27 +83,26 @@ export class TierListController {
       thumbnailUrl = uploadResult.secure_url;
     }
 
-    const itemImageUrls: string[] = [];
-    if (files.itemImages && files.itemImages.length > 0) {
-      for (const file of files.itemImages) {
+    const itemImageUrls: (string | null)[] = [];
+    // The property name here must also match
+    if (files.itemThumbnail && files.itemThumbnail.length > 0) {
+      for (const file of files.itemThumbnail) {
         const uploadResult = await this.cloudinaryService.uploadImage(file);
         itemImageUrls.push(uploadResult.secure_url);
       }
     }
     
-    // 9. Combine the uploaded image URLs with the item DTOs
     const itemsWithImages = itemsDto.map((item, index) => ({
       ...item,
       itemPhotoUrl: itemImageUrls[index] || null,
     }));
 
-    const createTierListDto: CreateTierListDto = {
-      tierListName: tierListName,
-      tierListType: tierListType,
-      categories: categories,
-      tierListThumbnailUrl: thumbnailUrl,
-      items: itemsWithImages,
-    };
+    const createTierListDto = new CreateTierListDto();
+    createTierListDto.tierListName = body.tierListName;
+    createTierListDto.tierListType = body.tierListType;
+    createTierListDto.categories = categories;
+    createTierListDto.tierListThumbnailUrl = thumbnailUrl;
+    createTierListDto.items = itemsWithImages;
 
     const validationPipe = new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true });
     try {

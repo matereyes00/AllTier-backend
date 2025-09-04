@@ -5,9 +5,8 @@ import {
   SelectQueryBuilder, FindOptionsWhere } from 'typeorm';
 
 export class BaseRepository<T extends ObjectLiteral> {
-  private repository: Repository<T >;
+  protected repository: Repository<T>;
   protected alias: string;
-
 
   constructor(entity: EntityTarget<T>, dataSource: DataSource) {
     this.repository = dataSource.getRepository<T>(entity);

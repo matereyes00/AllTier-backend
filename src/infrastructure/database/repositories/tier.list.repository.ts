@@ -20,10 +20,6 @@ export class TierListRepository extends BaseRepository<TierList> {
     private dataSource: DataSource,
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    @InjectRepository(TierList)
-    private readonly tierListRepository: Repository<TierList>,
-    @InjectRepository(Item)
-    private readonly itemRepository: Repository<Item>,
     @InjectRepository(TierListLike)
     private readonly likesRepository: Repository<TierListLike>,
   ) {
@@ -78,19 +74,19 @@ export class TierListRepository extends BaseRepository<TierList> {
   }
 
   async save(tierList: TierList): Promise<TierList> {
-    return this.tierListRepository.save(tierList);
+    return this.repository.save(tierList);
   }
 
   async update(
     tierList: TierList,
     updateTierListDto: UpdateTierListDto,
   ): Promise<TierList> {
-    this.tierListRepository.merge(tierList, updateTierListDto);
-    return this.tierListRepository.save(tierList);
+    this.repository.merge(tierList, updateTierListDto);
+    return this.repository.save(tierList);
   }
 
   async remove(tierList: TierList): Promise<void> {
-    await this.tierListRepository.remove(tierList);
+    await this.repository.remove(tierList);
   }
 
   async incrementLikes(userId: string, tierListId: string): Promise<TierList> {
@@ -101,14 +97,13 @@ export class TierListRepository extends BaseRepository<TierList> {
     }
 
     // 2️⃣ Ensure the tier list exists
-    const tierList = await this.tierListRepository.findOne({
+    const tierList = await this.repository.findOne({
       where: { tierListId },
       relations: ['likes'], // load likes relation to check existing likes if needed
     });
     if (!tierList) {
       throw new NotFoundException('Tier list not found');
     }
-
     // 3️⃣ Check if user already liked the tier list
     const existingLike = await this.likesRepository.findOne({
       where: {
@@ -120,25 +115,20 @@ export class TierListRepository extends BaseRepository<TierList> {
     if (existingLike) {
       throw new ConflictException("You can't like the same list twice");
     }
-
     // 4️⃣ Increment likeCount
-    await this.tierListRepository.increment({ tierListId }, 'likeCount', 1);
-
+    await this.repository.increment({ tierListId }, 'likeCount', 1);
     // 5️⃣ Save the Like entity
     await this.likesRepository.save(
       this.likesRepository.create({ user, tierList }),
     );
-
     // 6️⃣ Return the updated tier list safely
-    const updatedTierList = await this.tierListRepository.findOne({
+    const updatedTierList = await this.repository.findOne({
       where: { tierListId },
       relations: ['user', 'items', 'likes', 'comments'],
     });
-
     if (!updatedTierList) {
       throw new NotFoundException('Tier list not found after update');
     }
-
     // 6️⃣ Return updated tier list
     return updatedTierList;
   }

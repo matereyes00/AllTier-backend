@@ -109,5 +109,18 @@ export class ItemsController {
     )
   }
 
+  /**
+   * !get all items in a specific tier list 
+   *  if the user has already given a rating and feedback to the item, 
+      * attach the feedback and item fields too.
+   */
+  @Get()
+  @ApiOperation({ summary: 'Get all items for a specific tier list' })
+  async getItemsFromATierList(
+      @Param('tierListId', ParseUUIDPipe) tierListId: string,
+  ) {
+    return this.itemsService.getItemsFromATierList(tierListId)
+  }
+
 
 }
