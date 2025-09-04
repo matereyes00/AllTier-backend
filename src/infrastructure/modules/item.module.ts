@@ -6,22 +6,24 @@ import { ItemsController } from '../http/controllers/item.controller';
 import { ItemsService } from '../../application/services/item.service';
 import { ItemRepository } from '../database/repositories/item.repository';
 import { TierList } from '../../domain/entities/tier.list.entity';
-import { TierListRepository } from '../database/repositories/tier.list.repository';
 import { UsersModule } from './users.module';
 import { User } from '../../domain/entities/user.entity';
 import { TierListLikesModule } from './likes.module';
 import { TierListModule } from './tier.list.module';
-import { TierListLikeRepository } from '../database/repositories/like.repository';
 import { CloudinaryService } from 'src/application/services/cloudinary.service';
+import { RatingModule } from './rating.module';
+import { Rating } from '../../domain/entities/rating.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Item, TierList, User]), 
+  imports: [TypeOrmModule.forFeature([Item, TierList, User, Rating]), 
     AuthModule, 
     UsersModule, 
     TierListLikesModule,
-    forwardRef(() => TierListModule)
+    forwardRef(() => TierListModule),
+    forwardRef(() => RatingModule)
   ],
   controllers: [ItemsController],
   providers: [ItemsService, ItemRepository, CloudinaryService],
+  exports: [ItemRepository], 
 })
 export class ItemModule {}
