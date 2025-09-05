@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Item } from "../../../domain/entities/item.entity";
 import { TierList } from "../../../domain/entities/tier.list.entity";
-import { DataSource, Repository } from "typeorm";
+import { DataSource, FindOptionsRelations, Repository } from "typeorm";
 import { BaseRepository } from "./base.repository";
 import { UpdateItemDto } from "../../../application/dtos/Items/update-item.dto";
 import { Rating } from "src/domain/entities/rating.entity";
@@ -44,8 +44,14 @@ export class ItemRepository extends BaseRepository<Item> {
   }
 
   // ? GET 
-  async findAllByTierListId(tierListId: string) {
-    return super.findAllByRelationId('tierList', 'tierListId', tierListId )
+
+  async findAllByTierListId(
+    tierListId: string,
+    relations?: FindOptionsRelations<Item> // 1. Add the optional relations parameter
+  ): Promise<Item[]> {
+    
+    // 2. Pass the relations object to the generic method in the base class.
+    return super.findAllByRelationId('tierList', 'tierListId', tierListId, relations);
   }
 
   // ? QUERIES

@@ -68,9 +68,6 @@ export class TierListController {
     @Body() body: any,
     @CurrentUser() user: User,
   ) {
-    console.log('--- RECEIVED FILES ---');
-    console.log(files);
-    console.log('----------------------');
     if (!body.categories || !body.items) {
       throw new BadRequestException('Categories and items fields are required.');
     }

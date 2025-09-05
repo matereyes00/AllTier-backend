@@ -11,13 +11,15 @@ import { TierListLike } from '../../domain/entities/like.entity';
 import { TierListLikesModule } from './likes.module';
 import { ItemModule } from './item.module';
 import { CloudinaryService } from 'src/application/services/cloudinary.service';
+import { RatingModule } from './rating.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([TierList, Item, User, TierListLike]),
     AuthModule,
     TierListLikesModule,
-    forwardRef(() => ItemModule)
+    forwardRef(() => ItemModule),
+    forwardRef(() => RatingModule)
   ],
   controllers: [TierListController],
   providers: [TierListService, TierListRepository, CloudinaryService],

@@ -7,11 +7,14 @@ import { RatingsRepository } from '../database/repositories/rating.repository';
 import { Rating } from '../../domain/entities/rating.entity';
 import { ItemModule } from './item.module';
 import { Item } from '../../domain/entities/item.entity';
+import { TierList } from 'src/domain/entities/tier.list.entity';
+import { TierListModule } from './tier.list.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Rating, Item]), 
+  imports: [TypeOrmModule.forFeature([Rating, Item, TierList]), 
     AuthModule,
     forwardRef(() => ItemModule),
+    forwardRef(() => TierListModule),
   ],
   controllers: [RatingsController],
   providers: [RatingsService, RatingsRepository],

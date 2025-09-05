@@ -56,7 +56,7 @@ describe('TierListController', () => {
 
   describe('create', () => {
     it('should create and return a new tier list owned by user', async () => {
-      const createDto = { tierListName: 'Test List', categories: ['S', 'A'], tierListType: 'Rating', thumbnailUrl: '/hello.jpg' };
+      const createDto = { tierListName: 'Test List', categories: ['S', 'A'], tierListType: 'Rating', tierListThumbnailUrl: '/hello.jpg' };
       const user = { userId: randomUUID() } as User;
       const expectedResult = { tierListId: randomUUID(), ...createDto };
 

@@ -79,6 +79,8 @@ export class ItemsService {
     }
 
   async getItemsFromATierList(tierListId: string): Promise<Item[]> {
-    return this.itemRepository.findAllByTierListId(tierListId)
+    return this.itemRepository.findAllByTierListId(tierListId, { 
+      ratings: true 
+    })
   }
 }

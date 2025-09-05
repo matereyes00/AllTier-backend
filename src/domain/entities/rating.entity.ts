@@ -25,8 +25,10 @@ export class Rating {
 
   @Column()
   feedback: string;
+
+  @Column()
+  score: number;
   
-  // A rating can have many feedback votes.
   @OneToMany(() => FeedbackVote, (vote) => vote.rating)
   feedbackVotes: FeedbackVote[];
 
