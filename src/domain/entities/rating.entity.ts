@@ -23,10 +23,10 @@ export class Rating {
   @ManyToOne(() => User, (user) => user.ratings, { onDelete: 'CASCADE' })
   user: User;
 
-  @Column()
+  @Column({nullable: true})
   feedback: string;
 
-  @Column()
+  @Column({type: 'int', nullable: false, default: 0})
   score: number;
   
   @OneToMany(() => FeedbackVote, (vote) => vote.rating)
