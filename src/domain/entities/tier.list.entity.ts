@@ -13,6 +13,7 @@ import { Item } from './item.entity';
 import { TierListType } from '../enum/tier.list.enum';
 import { Comment } from './comment.entity';
 import { TierListLike } from './like.entity';
+import { TierLevel } from '../enum/tier.level.enum';
 
 @Entity()
 export class TierList {
@@ -72,4 +73,7 @@ export class TierList {
     default: [], // It's good practice to provide a default value
   })
   categories: string[]
+
+  @Column({ type: 'enum', enum: TierLevel, default: TierLevel.NA })
+  tierLevel: TierLevel;
 }

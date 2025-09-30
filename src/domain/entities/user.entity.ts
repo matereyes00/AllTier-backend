@@ -3,6 +3,7 @@ import { TierList } from './tier.list.entity';
 import { Rating } from './rating.entity';
 import { Comment } from './comment.entity';
 import { TierListLike } from './like.entity';
+import { CommentLike } from './comment.like.entity';
 
 @Entity()
 export class User {
@@ -29,6 +30,9 @@ export class User {
   // A user can also have many comments
   @OneToMany(() => Comment, (comment) => comment.user)
   comments: Comment[];
+
+  @OneToMany(() => CommentLike, (like) => like.user)
+  commentLikes: CommentLike[]
 
   @Column({ default: 0 })
   tokenVersion: number;
