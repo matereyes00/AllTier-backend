@@ -4,10 +4,12 @@ import {
   Column,
   ManyToOne,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 import { TierList } from './tier.list.entity';
 import { CommentVote } from './coment.vote.entity';
+import { CommentLike } from './comment.like.entity';
 
 @Entity()
 export class Comment {
@@ -38,4 +40,7 @@ export class Comment {
 
   @Column({ default: 0 })
   likeCount: number;
+
+  @OneToMany(() => CommentLike, (like) => like.comment)
+  commentLikes: CommentLike[];
 }

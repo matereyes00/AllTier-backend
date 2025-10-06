@@ -93,4 +93,24 @@ export class CommentsService {
     this.commentRepository.remove(comment);
     return `Comment ${comment.commentId} removed from database`
   }
+
+  async likeComment(
+    tierListId: string, 
+    commentId: string, 
+    userId: string
+  ) {
+    console.log(`Entered likeComment() in comments service`)
+    const tierList = await this.tierListRepository.findById(tierListId);
+    console.log(`TIER LIST: ${tierList?.commentCount}`)
+    if (!tierList) {
+      throw new NotFoundException(`TierList with id ${tierListId} not found`);
+    }
+    const comment = await this.commentRepository.findCommentBasedOnTierList(tierListId, commentId)
+    console.log(`[COMMENTS SERVICE] ${comment.commentId}`)
+    if(!comment) {
+      throw new NotFoundException('Comment does not exist')
+    }
+    return this.commentRepository.incrementCommentLikes(comment.commentId, userId)
+
+  }
 }

@@ -12,10 +12,13 @@ import { TierListLike } from '../../domain/entities/like.entity';
 import { TierListLikeRepository } from '../database/repositories/like.repository';
 import { UserRepository } from '../database/repositories/user.repository';
 import { User } from '../../domain/entities/user.entity';
+import { CommentLike } from 'src/domain/entities/comment.like.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment, TierList, TierListLike, Item, User]),
+    TypeOrmModule.forFeature([
+      Comment, TierList, TierListLike, Item, User, CommentLike
+    ]),
     AuthModule,
   ],
   controllers: [CommentsController],

@@ -94,4 +94,16 @@ export class CommentsController {
   async remove(@Param('id') id: string, @CurrentUser() user: User) {
     return this.commentsService.removeComment(id, user.userId);
   }
+
+
+  @Patch(':tierListId/like-comment/:commentId')
+  async likeComment(
+    @Param('tierListId') tierListId: string, 
+    @Param('commentId') commentId: string, 
+    @CurrentUser() user: User) {
+      console.log(`Entered likeComment() in comments controller`)
+      console.log(user.userId)
+      return this.commentsService.likeComment(tierListId, commentId, user.userId)
+    }
+
 }

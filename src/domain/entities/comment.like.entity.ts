@@ -15,7 +15,7 @@ export class CommentLike {
   @PrimaryGeneratedColumn('uuid')
   commentLikeId: string;
 
-  @ManyToOne(() => User, (user) => user.likes, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.commentLikes, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Comment, (comment) => comment.likeCount, {

@@ -22,8 +22,9 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
+    console.log('PAYLOAD:', JSON.stringify(payload, null, 2));
     const user = await this.userRepository.findOne({
-      where: { userId: payload.sub },
+      where: { userId: payload.id },
     });
     if (!user) {
       throw new UnauthorizedException();
